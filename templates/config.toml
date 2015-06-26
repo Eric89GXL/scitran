@@ -1,0 +1,67 @@
+
+[flywheel]
+	# Used to identify config file versions and prevent flywheel from running without important keys.
+	version = 0
+
+[site]
+	name   = "Local"
+	domain = "localhost"
+
+	# Demo mode allows any oAuth-approved user to become a scitran user.
+	# Otherwise, each user must be manually whitelisted by an administrator beforehand.
+	demo = true
+
+	# Insecure mode allows manual override by setting ?user=USER in api calls.
+	# For debugging purposes only.
+	insecure = false
+
+[ports]
+	# Port that the web UI will be served on.
+	web = 44300
+
+	# A separate port that mandates SSL client certificate authentication.
+	# Only uses for automated access such as a reaper instance.
+	machine = 8080
+
+[central]
+	# Is this instance registered with scitran central?
+	registered = false
+
+	# Where to find the central service
+	url = "https://sdmc.scitran.io/api"
+
+[auth]
+	provider        = "Google"
+
+	# Default client ID for development environments
+	client_id       = "1052740023071-n20pk8h5uepdua3r8971pc6jrf25lvee.apps.googleusercontent.com"
+
+	id_endpoint     = "https://www.googleapis.com/plus/v1/people/me/openIdConnect"
+	auth_endpoint   = "https://accounts.google.com/o/oauth2/auth"
+	verify_endpoint = "https://www.googleapis.com/oauth2/v1/tokeninfo"
+
+[uwsgi]
+	# What TCP port to be reverse-proxied from
+	bind = "[::]:9000"
+
+	# How many concurrent requests to handle
+	threads   = 2
+	processes = 4
+
+[browser]
+	# What version of the API to hit
+	api_prefix = "api"
+
+	# Minutes local cache entries are kept
+	cache_expire = 5
+
+	# Temporary hackaround for missing pagination
+	render_limit = 300
+
+[mongo]
+	# Do not change; use bind mounts.
+	# mount --bind /folder1 /folder2
+	location = "persistent/mongo"
+
+[folders]
+	# Do not change
