@@ -71,82 +71,6 @@ function EnsureVirtualEnv() {(
 	bb-flag-set venv
 )}
 
-function LoadVenv() {
-	# Not in a subshell for obvious reasons
-	source $venv/bin/activate
-
-	# Ensure .pyc files are generated
-	unset PYTHONDONTWRITEBYTECODE
-}
-
-# TODO: probably requires some apt packages
-# build-essential python-dev
-function EnsurePipPackages() {(
-
-	# OSX does not ship with hashers >:|
-	if [[ $platform == 'mac' ]]; then
-		bb-log-error "Todo: script homebrew"
-		brew install coreutils
-	fi
-
-	# Pip takes time to run, let's circumvent if up to date
-	reqHash=`cat requirements.txt requirements-manual.txt | sha1sum requirements.txt | cut -c -7`
-	flagName="pip-pkgs-$reqHash"
-
-	# Ensure venv, and clear pkgs flag if no venv
-	test -d $venv || (
-		bb-flag-unset $flagName
-
-		virtualenv $venv
-		bb-log-info "Created python virtual environment"
-	)
-
-	set +e
-	bb-flag? $flagName && return
-	set -e
-
-	# Install packages
-	#
-	# NOTE: DO NOT USE UNMODIFIED `pip freeze` TO GENERATE THIS FILE.
-	# Pip will happily save instructions it has no idea how to proccess.
-	# Specifically, you should ignore lines from manually-installed (git) packages.
-	LoadVenv
-	pip install -r requirements.txt | grep -v "Requirement already satisfied"
-
-	# Install manual packages.
-	#
-	#  Hackaround for pip's inability to install from its own r.txt file.
-	#  Can later be moved into r.txt with correct flags + egg names.
-	while read line; do
-		echo "Installing $line"
-		pip install $line
-	done <requirements-manual.txt
-
-	# Remember this set of packages
-	bb-log-info "Pip packages installed"
-	bb-flag-set $flagName
-)}
-
-function EnsureConfig() {
-	test -f config.toml || (
-		cp $tDir/config.toml config.toml
-		bb-log-info "Generated default config file"
-	)
-
-	# Not in a subshell for obvious reasons
-	LoadVenv
-	eval `scripts/load-env.py config.toml`
-
-	# Generate configured templates
-	scripts/template.py config.toml ${tDir}/web-config.js    > ${gDir}/web-config.js
-	scripts/template.py config.toml ${tDir}/reflex.config.sh > ${gDir}/reflex.config.sh
-	scripts/template.py config.toml ${tDir}/uwsgi.config.ini > ${gDir}/uwsgi.config.ini
-
-	# Mongo data directory is configurable; use the location we just discovered
-	mkdir -p $lDir $dDir $pDir $gDir $mDir ${_mongo_location}
-}
-
-
 function EnsureGolang() {(
 	set +e
 	bb-flag? golang-$golangVer && return
@@ -207,9 +131,97 @@ function EnsureReflex() {(
 
 
 #
-# Run actions
+# Environment Config
 #
 
+
+function LoadVenv() {
+	# Not in a subshell for obvious reasons
+	source $venv/bin/activate
+
+	# Ensure .pyc files are generated
+	unset PYTHONDONTWRITEBYTECODE
+}
+
+# TODO: probably requires some apt packages
+# build-essential python-dev
+function EnsurePipPackages() {(
+
+	# OSX does not ship with hashers >:|
+	if [[ $platform == 'mac' ]]; then
+		bb-log-error "Todo: script homebrew"
+		brew install coreutils
+	fi
+
+	# Pip takes time to run, let's circumvent if up to date
+	reqHash=`cat requirements.txt requirements-manual.txt | sha1sum requirements.txt | cut -c -7`
+	flagName="pip-pkgs-$reqHash"
+
+	# Ensure venv, and clear pkgs flag if no venv
+	test -d $venv || (
+		bb-flag-unset $flagName
+
+		virtualenv $venv
+		bb-log-info "Created python virtual environment"
+	)
+
+	set +e
+	bb-flag? $flagName && return
+	set -e
+
+	# Install packages
+	#
+	# NOTE: DO NOT USE UNMODIFIED `pip freeze` TO GENERATE THIS FILE.
+	# Pip will happily save instructions it has no idea how to proccess.
+	# Specifically, you should ignore lines from manually-installed (git) packages.
+	LoadVenv
+	pip install -r requirements.txt | grep -v "Requirement already satisfied"
+
+	# Install manual packages.
+	#
+	#  Hackaround for pip's inability to install from its own r.txt file.
+	#  Can later be moved into r.txt with correct flags + egg names.
+	while read line; do
+		echo "Installing $line"
+		pip install $line
+	done <requirements-manual.txt
+
+	# Remember this set of packages
+	bb-log-info "Pip packages installed"
+	bb-flag-set $flagName
+)}
+
+# For loading all project configuration into bash variables.
+# Requires that config.toml exist.
+function LoadConfig() {
+	# Not in a subshell for obvious reasons
+	LoadVenv
+	eval `scripts/load-env.py config.toml`
+}
+
+function EnsureConfig() {
+	test -f config.toml || (
+		cp $tDir/config.toml config.toml
+		bb-log-info "Generated default config file"
+	)
+
+	# Not in a subshell so that subsequent scripting can use config variables
+	LoadConfig
+
+	# Mongo data directory is configurable; use the location we just discovered
+	mkdir -p $lDir $dDir $pDir $gDir $mDir ${_mongo_location}
+
+	# Generate configured templates
+	scripts/template.py config.toml ${tDir}/web-config.js    > ${gDir}/web-config.js
+	scripts/template.py config.toml ${tDir}/reflex.config.sh > ${gDir}/reflex.config.sh
+	scripts/template.py config.toml ${tDir}/uwsgi.config.ini > ${gDir}/uwsgi.config.ini
+
+}
+
+
+#
+# Run actions
+#
 
 function Reflex() {(
 	# Quiets mongo complaining

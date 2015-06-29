@@ -5,27 +5,27 @@
 function Setup() {
 	DetectPlatform
 
+	# Install basic deps
 	EnsurePip
 	EnsureVirtualEnv
-	EnsurePipPackages
-	EnsureConfig
-	echo ${_mongo_location}
-
-	exit
 	EnsureMongoDb
 	EnsureGolang
 	EnsureReflex
-	GenerateTemplates
+
+	# Scitran-specific environment, config
+	EnsurePipPackages
+	EnsureConfig
 }
 
 function Launch() {
+	bb-log-info "Preparing environment"
 	Setup
-	exit
 
 	bb-log-info "Checking server code"
 	PylintCritical server.py
 
 	# Run
+	bb-log-info "Launching"
 	Reflex
 
 	# Wait for exit
