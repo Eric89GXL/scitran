@@ -204,8 +204,8 @@ function EnsureConfig() {
 	# Not in a subshell so that subsequent scripting can use config variables
 	LoadConfig
 
-	# Mongo data directory is configurable; use the location we just discovered
-	mkdir -p $lDir $pDir $gDir ${_mongo_location}
+	# Some data directories is configurable; use the location we just discovered
+	mkdir -p $lDir $pDir $gDir ${_mongo_location} ${_data_location}
 
 	# Generate configured templates
 	scripts/template.py config.toml ${tDir}/web-config.js     > ${gDir}/web-config.js
@@ -223,8 +223,8 @@ function EnsureCode() {
 	EnsureClone code/api      master   https://github.com/scitran/api.git
 	EnsureClone code/www      master   https://github.com/scitran/sdm.git
 	EnsureClone code/data     master   https://github.com/scitran/data.git
+	EnsureClone code/apps     master   https://github.com/scitran/apps.git
 
-	# EnsureClone code/apps     master   https://github.com/scitran/apps.git
 	# EnsureClone code/testdata master   https://github.com/scitran/testdata.git
 	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
 }
