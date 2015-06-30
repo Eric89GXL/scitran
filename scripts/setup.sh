@@ -90,13 +90,29 @@ function EnsureGolang() {(
 )}
 
 function EnsureMongoDb() {(
+	mongoVersion="2.6.9"
+
 	set +e
-	bb-flag? mongodb && return
+	bb-flag? mongodb-${mongoVersion} && return
 	set -e
 
-	bb-apt-install mongodb
+	# http://docs.mongodb.org/v2.6/tutorial/install-mongodb-on-ubuntu
+	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+	sudo apt-get update
+	sudo apt-get install -y mongodb-org=${mongoVersion} mongodb-org-server=${mongoVersion} mongodb-org-shell=${mongoVersion} mongodb-org-mongos=${mongoVersion} mongodb-org-tools=${mongoVersion}
 
-	bb-flag-set mongodb
+	echo "mongodb-org hold"        | sudo dpkg --set-selections
+	echo "mongodb-org-server hold" | sudo dpkg --set-selections
+	echo "mongodb-org-shell hold"  | sudo dpkg --set-selections
+	echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
+	echo "mongodb-org-tools hold"  | sudo dpkg --set-selections
+
+	# Potential removal instructions:
+	# sudo apt-get purge mongodb mongodb-clients mongodb-dev mongodb-server
+	# sudo rm -rf /var/log/mongodb /var/lib/mongodb
+
+	bb-flag-set mongodb-${mongoVersion}
 )}
 
 function EnsureReflex() {(
