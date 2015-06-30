@@ -240,6 +240,9 @@ function Reflex() {(
 
 	LoadVenv
 
+	# Hackaround for API import problems
+	export PYTHONPATH=../data
+
 	# Supress reflex output decoration and uwsgi's launch message
 	$reflexLoc --decoration=none --config=$gDir/reflex.config.sh | grep -v "getting INI configuration from $gDir/uwsgi.config.ini"
 )}
