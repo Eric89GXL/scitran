@@ -212,10 +212,25 @@ function EnsureConfig() {
 	mkdir -p $lDir $dDir $pDir $gDir $mDir ${_mongo_location}
 
 	# Generate configured templates
-	scripts/template.py config.toml ${tDir}/web-config.js    > ${gDir}/web-config.js
-	scripts/template.py config.toml ${tDir}/reflex.config.sh > ${gDir}/reflex.config.sh
-	scripts/template.py config.toml ${tDir}/uwsgi.config.ini > ${gDir}/uwsgi.config.ini
+	scripts/template.py config.toml ${tDir}/web-config.js     > ${gDir}/web-config.js
+	scripts/template.py config.toml ${tDir}/reflex.config.sh  > ${gDir}/reflex.config.sh
+	scripts/template.py config.toml ${tDir}/mongo.config.yaml > ${gDir}/mongo.config.yaml
+	scripts/template.py config.toml ${tDir}/uwsgi.config.ini  > ${gDir}/uwsgi.config.ini
+}
 
+function EnsureCode() {
+	# Folder, ref, URI
+	function EnsureClone() {
+		test -d $1 || git clone -b $2 $3 $1
+	}
+
+	EnsureClone code/api      master   https://github.com/scitran/api.git
+	EnsureClone code/www      master   https://github.com/scitran/sdm.git
+
+	# EnsureClone code/data     master   https://github.com/scitran/data.git
+	# EnsureClone code/apps     master   https://github.com/scitran/apps.git
+	# EnsureClone code/testdata master   https://github.com/scitran/testdata.git
+	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
 }
 
 

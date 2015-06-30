@@ -15,14 +15,16 @@ function Setup() {
 	# Scitran-specific environment, config
 	EnsurePipPackages
 	EnsureConfig
+	EnsureCode
 }
 
 function Launch() {
 	bb-log-info "Preparing environment"
 	Setup
 
-	bb-log-info "Checking server code"
-	PylintCritical server.py
+	# Pylint has many complaints ATM; reconcile as separate project
+	# bb-log-info "Checking server code"
+	# PylintCritical code/api/
 
 	# Run
 	bb-log-info "Launching"

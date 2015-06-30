@@ -1,0 +1,15 @@
+systemLog:
+   destination: file
+   path: "{{lDir}}/mongo.log"
+   logAppend: true
+storage:
+   journal:
+      enabled: true
+processManagement:
+   fork: false
+   pidFilePath: "{{pDir}}/uwsgi.pid"
+net:
+   bindIp: 127.0.0.1
+   port: 9001
+   unixDomainSocket:
+      enabled: false

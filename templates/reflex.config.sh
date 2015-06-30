@@ -12,7 +12,7 @@
 
 # Mongo server
 # Same thing here
---start-service --regex='.*\.invalidExtention2$' -- mongod --dbpath {{mongo.location}} --port 9001 --logpath {{lDir}}/mongo.log
+--start-service --regex='.*\.invalidExtention2$' -- mongod --config {{gDir}}/mongo.config.yaml
 
 # Gracefully reload uwsgi on file change
 # Pidfile also used in uwsgi.config.ini
