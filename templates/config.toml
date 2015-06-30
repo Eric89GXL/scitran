@@ -4,10 +4,16 @@
 	version = 0
 
 [site]
+	# Human friendly site name!
 	name   = "Local"
+
+	# Hostname that automated devices (reaper) will use to connect.
 	domain = "localhost"
 
-	# Demo mode allows any oAuth-approved user to become a scitran user.
+	# Used for identification to central.
+	id = "local"
+
+	# Demo mode allows any oAuth-approved user to become a user.
 	# Otherwise, each user must be manually whitelisted by an administrator beforehand.
 	demo = true
 
@@ -24,7 +30,7 @@
 	machine = 8080
 
 [central]
-	# Is this instance registered with scitran central?
+	# Is this instance registered with central?
 	registered = false
 
 	# Where to find the central service
@@ -41,8 +47,13 @@
 	verify_endpoint = "https://www.googleapis.com/oauth2/v1/tokeninfo"
 
 [uwsgi]
-	# What TCP port to be reverse-proxied from
+	# What TCP port to serve on.
+	# This will likely need to be reflected in the uri setting below.
 	bind = "[::]:9000"
+
+	# Where nginx can connect to uwsgi.
+	# Only change when running on more than one machine.
+	uri = "localhost:9000"
 
 	# How many concurrent requests to handle
 	threads   = 2
@@ -59,9 +70,19 @@
 	render_limit = 300
 
 [mongo]
+	# What port to serve mongo on. Mongo defaults to 27017.
+	# This will likely need to be reflected in the uri setting below.
+	port = 9001
+
+	# Where the server can connect to mongo.
+	# Only change when running on more than one machine.
+	uri = "mongodb://localhost:9001/scitran"
+
 	# Do not change; use bind mounts.
 	# mount --bind /folder1 /folder2
 	location = "persistent/mongo"
 
-[folders]
-	# Do not change
+[data]
+	# Do not change; use bind mounts.
+	# mount --bind /folder1 /folder2
+	location = "persistent/data"

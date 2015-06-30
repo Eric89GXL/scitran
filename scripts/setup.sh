@@ -205,7 +205,7 @@ function EnsureConfig() {
 	LoadConfig
 
 	# Mongo data directory is configurable; use the location we just discovered
-	mkdir -p $lDir $dDir $pDir $gDir $mDir ${_mongo_location}
+	mkdir -p $lDir $pDir $gDir ${_mongo_location}
 
 	# Generate configured templates
 	scripts/template.py config.toml ${tDir}/web-config.js     > ${gDir}/web-config.js

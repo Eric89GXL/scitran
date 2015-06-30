@@ -28,7 +28,7 @@
 			ci)
 				CI ;;
 			template)
-				GenerateTemplates ;;
+				EnsureConfig ;;
 			*)
 				echo "Usage: $0 {ci|template}" 1>&2;
 				exit 1
