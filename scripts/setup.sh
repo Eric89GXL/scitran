@@ -61,11 +61,7 @@ function EnsureVirtualEnv() {(
 	bb-flag? venv && return
 	set -e
 
-	if [[ $platform == 'linux' ]]; then
-		bb-apt-install python-virtualenv
-	elif [[ $platform == 'mac' ]]; then
-		pip install virtualenv
-	fi
+	bb-apt-install python-virtualenv
 
 	bb-log-info "Virtualenv installed"
 	bb-flag-set venv
@@ -78,12 +74,7 @@ function EnsureGolang() {(
 
 	tarF="golang.tar.gz"
 	temp="$( bb-tmp-dir )"
-
-	if [[ $platform == 'linux' ]]; then
-		snip="linux-amd64"
-	elif [[ $platform == 'mac' ]]; then
-		snip="darwin-amd64-osx10.8"
-	fi
+	snip="linux-amd64"
 
 	# bb-download appears to have strange quirks. How about no.
 	wget https://storage.googleapis.com/golang/go$golangVer.${snip}.tar.gz --progress=dot:mega -O $temp/$tarF
@@ -103,13 +94,7 @@ function EnsureMongoDb() {(
 	bb-flag? mongodb && return
 	set -e
 
-	if [[ $platform == 'linux' ]]; then
-		bb-apt-install mongodb
-	elif [[ $platform == 'mac' ]]; then
-		bb-log-error "Todo: script homebrew"
-		brew update
-		brew install mongodb
-	fi
+	bb-apt-install mongodb
 
 	bb-flag-set mongodb
 )}
@@ -146,12 +131,6 @@ function LoadVenv() {
 # TODO: probably requires some apt packages
 # build-essential python-dev
 function EnsurePipPackages() {(
-
-	# OSX does not ship with hashers >:|
-	if [[ $platform == 'mac' ]]; then
-		bb-log-error "Todo: script homebrew"
-		brew install coreutils
-	fi
 
 	# Pip takes time to run, let's circumvent if up to date
 	reqHash=`cat requirements.txt requirements-manual.txt | sha1sum requirements.txt | cut -c -7`
