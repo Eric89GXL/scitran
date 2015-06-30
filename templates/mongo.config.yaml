@@ -1,3 +1,7 @@
+#
+# This file is auto-generated.
+# Be sure you are editing the copy in templates/.
+#
 systemLog:
    destination: file
    path: "{{lDir}}/mongo.log"

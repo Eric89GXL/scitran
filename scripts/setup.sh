@@ -194,6 +194,7 @@ function LoadConfig() {
 	eval `scripts/load-env.py config.toml`
 }
 
+# Implies LoadConfig and LoadVenv
 function EnsureConfig() {
 	test -f config.toml || (
 		cp $tDir/config.toml config.toml
@@ -221,8 +222,8 @@ function EnsureCode() {
 
 	EnsureClone code/api      master   https://github.com/scitran/api.git
 	EnsureClone code/www      master   https://github.com/scitran/sdm.git
+	EnsureClone code/data     master   https://github.com/scitran/data.git
 
-	# EnsureClone code/data     master   https://github.com/scitran/data.git
 	# EnsureClone code/apps     master   https://github.com/scitran/apps.git
 	# EnsureClone code/testdata master   https://github.com/scitran/testdata.git
 	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
@@ -238,7 +239,9 @@ function Reflex() {(
 	rm -f ${lDir}/mongo.log
 
 	LoadVenv
-	$reflexLoc --decoration=none --config=$gDir/reflex.config.sh
+
+	# Supress reflex output decoration and uwsgi's launch message
+	$reflexLoc --decoration=none --config=$gDir/reflex.config.sh | grep -v "getting INI configuration from $gDir/uwsgi.config.ini"
 )}
 
 

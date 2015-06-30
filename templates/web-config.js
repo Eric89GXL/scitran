@@ -1,3 +1,7 @@
+//
+// This file is auto-generated.
+// Be sure you are editing the copy in templates/.
+//
 config = {
 	API_PREFIX: "{{browser.api_prefix}}",
 	DEMO_MODE: {{site.demo}},
