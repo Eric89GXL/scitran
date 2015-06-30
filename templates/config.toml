@@ -23,11 +23,11 @@
 
 [ports]
 	# Port that the web UI will be served on.
-	web = 44300
+	web = 8443
 
 	# A separate port that mandates SSL client certificate authentication.
 	# Only uses for automated access such as a reaper instance.
-	machine = 8080
+	machine = 8444
 
 [central]
 	# Is this instance registered with central?
@@ -80,9 +80,11 @@
 
 	# Do not change; use bind mounts.
 	# mount --bind /folder1 /folder2
+	# Must be relative to project directory.
 	location = "persistent/mongo"
 
 [data]
 	# Do not change; use bind mounts.
 	# mount --bind /folder1 /folder2
+	# Must be relative to project directory.
 	location = "persistent/data"
