@@ -131,6 +131,7 @@ function EnsureNginx() {(
 	sudo add-apt-repository -y ppa:nginx/stable
 	bb-log-info "Updating apt..."
 	sudo apt-get update -qq
+	sudo apt-get install -y ca-certificates
 	sudo apt-get install -y nginx
 
 	# Hackaround for nginx config not listening to my demand that it not use /var/log/nginx.
@@ -285,6 +286,8 @@ function EnsureClientCertificates() {(
 	ROOT_CERT_FILE=$keyDir/rootCA-cert.pem
 	ROOT_SRL_FILE=$keyDir/rootCA-cert.srl
 
+	CA_CERTS_COMBINED_FILE=$keyDir/ca-certificates+scitranCA.crt
+
 	# Ensure root CA ready
 	test -f $ROOT_CERT_COMBINED_FILE || (
 		# Create a root CA key
@@ -299,6 +302,7 @@ function EnsureClientCertificates() {(
 		bb-log-info "Generated CA certificate"
 	)
 
+	# Ensure server cert for SSL
 	test -f $KEY_CERT_COMBINED_FILE || (
 		# Generate individual files
 		openssl req -x509 -newkey rsa:2048 -subj "/C=US/ST=example/L=example/O=example/CN=example" -keyout $KEY_FILE -out $CERT_FILE -days 999 -nodes
@@ -308,6 +312,11 @@ function EnsureClientCertificates() {(
 
 		bb-log-info "Generated server certificate"
 	)
+
+	# Combine the ca-certificates bundle with out our trusted CA certificate
+	# This is a hackaround for having to give nginx a single CA certs package for client cert auth.
+	# Which is itself a hackaround for making nginx more compatible with various SSL client auth libraries (eg, golang).
+	cat /etc/ssl/certs/ca-certificates.crt $ROOT_CERT_FILE > $CA_CERTS_COMBINED_FILE
 )}
 
 #
