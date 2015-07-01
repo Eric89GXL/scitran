@@ -12,10 +12,13 @@ function Setup() {
 	EnsureGolang
 	EnsureReflex
 
-	# Scitran-specific environment, config
+	# Scitran-specific environment, code
 	EnsurePipPackages
 	EnsureConfig
 	EnsureCode
+
+	# Scitran-specific stateful config
+	EnsureBootstrapData
 }
 
 function Launch() {
@@ -27,6 +30,8 @@ function Launch() {
 	# PylintCritical code/api/
 
 	# Run
+	# Hackaround: control-C doesn't show reflex cleanup ops.
+	# Should instead use a sigtrap, kill -INT, pid-wait.
 	bb-log-info "Launching"
 	Reflex
 

@@ -235,9 +235,6 @@ function EnsureCode() {
 #
 
 function Reflex() {(
-	# Quiets mongo complaining
-	rm -f ${lDir}/mongo.log
-
 	LoadVenv
 
 	# Hackaround for API import problems
@@ -245,6 +242,60 @@ function Reflex() {(
 
 	# Supress reflex output decoration and uwsgi's launch message
 	$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh | grep -v "getting INI configuration from $gDir/uwsgi.config.ini"
+)}
+
+# Add some initial db state if none exists.
+# Should be used before mongo has ever been launched (via Reflex() or otherwise)
+# Hackaround: duplicates Reflex()
+function EnsureBootstrapData() {(
+
+	# This duration needs to be long enough to run and cleanly shut down all infra.
+	# Hackaround for a sleep-try-loop that waits for mongo to be up.
+	waitSeconds="5"
+
+	# Test if mongo has ever been launched before
+	test -f persistent/mongo/mongod.lock || (
+		bb-log-info "Preparing infrastructre for bootstrap..."
+
+		LoadVenv
+
+		# Hackaround for API import problems
+		export PYTHONPATH=../data
+
+		# Supress reflex output decoration and uwsgi's launch message
+		# Launch reflex in the background. Omits the grep to get PID easily -.-
+		$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh &
+		taskPID=$!
+		bb-log-info "Reflex temporarily launched with $taskPID"
+
+		# Hope that infra is online
+		bb-log-info "Waiting for infrastructre to be ready for bootstrap..."
+		sleep $waitSeconds
+
+		# Bootstrap
+		bb-log-info "Loading initial users..."
+		(
+			LoadVenv
+
+			# Hackaround for API import problems
+			export PYTHONPATH=../data
+
+			# This ain't uwsgi; chdir manually in this subshell
+			cd code/api
+
+			# Run
+			./bootstrap.py dbinit -j ../../${tDir}/whelp.json "${_mongo_uri}"
+		)
+
+		# Shut down infra
+		bb-log-info "Finishing bootstrap..."
+		kill -INT $taskPID
+		sleep $waitSeconds
+
+		# Sanity check
+		# ps aux | grep uwsgi | grep -v grep
+		# ps aux | grep mongo | grep -v grep
+	)
 )}
 
 
