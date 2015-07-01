@@ -9,6 +9,7 @@ function Setup() {
 	EnsurePip
 	EnsureVirtualEnv
 	EnsureMongoDb
+	EnsureNginx
 	EnsureGolang
 	EnsureReflex
 

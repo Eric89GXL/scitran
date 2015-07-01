@@ -95,10 +95,10 @@ function EnsureGolang() {(
 )}
 
 function EnsureMongoDb() {(
-	mongoVersion="2.6.9"
+	mongoVer="2.6.9"
 
 	set +e
-	bb-flag? mongodb-${mongoVersion} && return
+	bb-flag? mongodb-${mongoVer} && return
 	set -e
 
 	# http://docs.mongodb.org/v2.6/tutorial/install-mongodb-on-ubuntu
@@ -106,7 +106,7 @@ function EnsureMongoDb() {(
 	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
 	bb-log-info "Updating apt..."
 	sudo apt-get update -qq
-	sudo apt-get install -y mongodb-org=${mongoVersion} mongodb-org-server=${mongoVersion} mongodb-org-shell=${mongoVersion} mongodb-org-mongos=${mongoVersion} mongodb-org-tools=${mongoVersion}
+	sudo apt-get install -y mongodb-org=${mongoVer} mongodb-org-server=${mongoVer} mongodb-org-shell=${mongoVer} mongodb-org-mongos=${mongoVer} mongodb-org-tools=${mongoVer}
 
 	echo "mongodb-org hold"        | sudo dpkg --set-selections
 	echo "mongodb-org-server hold" | sudo dpkg --set-selections
@@ -118,7 +118,24 @@ function EnsureMongoDb() {(
 	# sudo apt-get purge mongodb mongodb-clients mongodb-dev mongodb-server
 	# sudo rm -rf /var/log/mongodb /var/lib/mongodb
 
-	bb-flag-set mongodb-${mongoVersion}
+	mongod --version | head -n 1
+	bb-log-info Mongo $mongoVer installed.
+	bb-flag-set mongodb-${mongoVer}
+)}
+
+function EnsureNginx() {(
+	set +e
+	bb-flag? nginx && return
+	set -e
+
+	sudo add-apt-repository -y ppa:nginx/stable
+	bb-log-info "Updating apt..."
+	sudo apt-get update -qq
+	sudo apt-get install -y nginx
+
+	nginx -v
+	bb-log-info Nginx $nginxVer installed.
+	bb-flag-set nginx
 )}
 
 function EnsureReflex() {(
