@@ -38,7 +38,7 @@ service ssh restart
 # WILL DESTROY ANY STORED DATA IN THIS INSTANCE.
 rm -rf /scitran/persistent/mongo
 mkdir -p /scitran-mongo
-ln -s //scitran-mongo /scitran/persistent/mongo
+ln -s /scitran-mongo /scitran/persistent/mongo
 
 # Start in /scitran
 echo "cd /scitran" >> /home/vagrant/.bashrc
