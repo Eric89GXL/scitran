@@ -230,9 +230,14 @@ function EnsureCode() {
 	EnsureClone code/www      master   https://github.com/scitran/sdm.git
 	EnsureClone code/data     master   https://github.com/scitran/data.git
 	EnsureClone code/apps     master   https://github.com/scitran/apps.git
+	EnsureClone code/www      master   https://github.com/scitran/sdm.git
 
 	# EnsureClone code/testdata master   https://github.com/scitran/testdata.git
 	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
+
+	# Web app demands web-config.js
+	mkdir -p code/www/app
+	cp ${gDir}/web-config.js code/www/app/
 }
 
 
@@ -253,6 +258,7 @@ function Reflex() {(
 # Add some initial db state if none exists.
 # Should be used before mongo has ever been launched (via Reflex() or otherwise)
 # Hackaround: duplicates Reflex()
+# Hackaround: should be composable, and a run target of live.sh even if database already exists?
 function EnsureBootstrapData() {(
 
 	# This duration needs to be long enough to run and cleanly shut down all infra.

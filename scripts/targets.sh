@@ -43,3 +43,23 @@ function CI() {
 	Setup
 	PylintAll server.py
 }
+
+function Release() {
+	DetectPlatform
+
+	# Remove old tar
+	rm -f release.tar
+
+	# Whitelist files to ship (AKA, don't put random certs + config in dist)
+	bb-log-info "Preparing list of files to ship..."
+	files=(`git ls-files`)
+	files+=("code")
+
+	bb-log-info "Creating release tarball..."
+	# Don't create a tarbomb
+	if [[ $platform == 'linux' ]]; then
+		tar --transform 's,^,scitran/,rSh' -cf release.tar ${files[@]}
+	elif [[ $platform == 'mac' ]]; then
+		tar -s ',^,scitran/,' -cf release.tar ${files[@]}
+	fi
+}
