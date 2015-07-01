@@ -11,8 +11,10 @@
 --start-service --glob="does-not-exist" --inverse-regex=".*" -- uwsgi {{gDir}}/uwsgi.config.ini
 
 # Mongo server
-# Same thing here
 --start-service --glob="does-not-exist" --inverse-regex=".*" -- mongod --config {{gDir}}/mongo.config.yaml
+
+# Nginx server
+--start-service --glob="does-not-exist" --inverse-regex=".*" -- nginx -p {{absPath}} -c {{gDir}}/nginx/nginx.conf
 
 # Gracefully reload uwsgi on file change
 # Pidfile also used in uwsgi.config.ini

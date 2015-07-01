@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #
+import os
 import sys
 import pystache
 import toml
@@ -18,6 +19,9 @@ mapping["gDir"]     ="persistent/generated"
 mapping["lDir"]     ="persistent/logs"
 mapping["pDir"]     ="persistent/pids"
 mapping["venv"]     ="persistent/venv"
+
+# Hackaround for any template that needs an absolute path
+mapping["absPath"]  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 result = pystache.render(open(temP, 'r').read(), mapping)
 

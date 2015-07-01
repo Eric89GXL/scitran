@@ -133,6 +133,12 @@ function EnsureNginx() {(
 	sudo apt-get update -qq
 	sudo apt-get install -y nginx
 
+	# Hackaround for nginx config not listening to my demand that it not use /var/log/nginx.
+	# A zero-byte error log is generated there, completely ignoring configuration.
+	# It looks like nginx is hard coded to assume it's launched with root.
+	sudo mkdir -p /var/log/nginx/
+	sudo chmod 777 /var/log/nginx/
+
 	nginx -v
 	bb-log-info Nginx $nginxVer installed.
 	bb-flag-set nginx
@@ -235,6 +241,10 @@ function EnsureConfig() {
 	scripts/template.py config.toml ${tDir}/reflex.config.sh  > ${gDir}/reflex.config.sh
 	scripts/template.py config.toml ${tDir}/mongo.config.yaml > ${gDir}/mongo.config.yaml
 	scripts/template.py config.toml ${tDir}/uwsgi.config.ini  > ${gDir}/uwsgi.config.ini
+
+	# Nginx is a folder
+	cp -r ${tDir}/nginx ${gDir}
+	scripts/template.py config.toml ${tDir}/nginx/nginx.conf  > ${gDir}/nginx/nginx.conf
 }
 
 function EnsureCode() {
