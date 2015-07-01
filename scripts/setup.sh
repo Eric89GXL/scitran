@@ -49,10 +49,15 @@ function EnsurePip() {(
 	# Ensure .pyc files are generated
 	unset PYTHONDONTWRITEBYTECODE
 
-	curl https://bootstrap.pypa.io/get-pip.py | python
-	pip install --upgrade pip
+	# Download pip bootstrapper
+	tempF="$( bb-tmp-file )"
+	curl https://bootstrap.pypa.io/get-pip.py > $tempF
 
-	bb-log-info "Python installed"
+	# Install then upgrade pip
+	sudo python $tempF
+	sudo pip install --upgrade pip
+
+	bb-log-info "Pip installed"
 	bb-flag-set pip
 )}
 
@@ -61,7 +66,7 @@ function EnsureVirtualEnv() {(
 	bb-flag? venv && return
 	set -e
 
-	bb-apt-install python-virtualenv
+	sudo apt-get install -y python-virtualenv
 
 	bb-log-info "Virtualenv installed"
 	bb-flag-set venv
@@ -99,7 +104,8 @@ function EnsureMongoDb() {(
 	# http://docs.mongodb.org/v2.6/tutorial/install-mongodb-on-ubuntu
 	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
 	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
-	sudo apt-get update
+	bb-log-info "Updating apt..."
+	sudo apt-get update -qq
 	sudo apt-get install -y mongodb-org=${mongoVersion} mongodb-org-server=${mongoVersion} mongodb-org-shell=${mongoVersion} mongodb-org-mongos=${mongoVersion} mongodb-org-tools=${mongoVersion}
 
 	echo "mongodb-org hold"        | sudo dpkg --set-selections
