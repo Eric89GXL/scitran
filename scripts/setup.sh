@@ -264,7 +264,7 @@ function EnsureBootstrapData() {(
 
 		# Supress reflex output decoration and uwsgi's launch message
 		# Launch reflex in the background. Omits the grep to get PID easily -.-
-		$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh &
+		$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh > /dev/null &
 		taskPID=$!
 		bb-log-info "Reflex temporarily launched with $taskPID"
 
@@ -284,7 +284,18 @@ function EnsureBootstrapData() {(
 			cd code/api
 
 			# Run
-			./bootstrap.py dbinit -j ../../${tDir}/whelp.json "${_mongo_uri}"
+			set +e
+			./bootstrap.py dbinit -j ../../${tDir}/bootstrap.json "${_mongo_uri}"
+			result=$?
+
+			# If bootstrapping failed, still shut down infra
+			if [ $result -ne 0 ]; then
+			   bb-log-info "Bootstrapping failed. Cleaning up..."
+			   kill -INT $taskPID
+			   sleep $waitSeconds
+
+			   exit $result;
+			fi
 		)
 
 		# Shut down infra
