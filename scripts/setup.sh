@@ -247,7 +247,7 @@ function EnsureConfig() {
 	scripts/template.py config.toml ${tDir}/nginx/nginx.conf  > ${gDir}/nginx/nginx.conf
 }
 
-function EnsureCode() {
+function EnsureCode() {(
 	# Folder, ref, URI
 	function EnsureClone() {
 		test -d $1 || git clone -b $2 $3 $1
@@ -265,8 +265,50 @@ function EnsureCode() {
 	# Web app demands web-config.js
 	mkdir -p code/www/app
 	cp ${gDir}/web-config.js code/www/app/
-}
+)}
 
+
+function EnsureClientCertificates() {(
+	keyDir=$stateDir/keys
+	mkdir -p $keyDir
+
+	# Hackaround: really, there should be another toml template holding all these.
+	# load-env.py and template.py should unconditionally load them.
+	# Then LoadConfig / EnsureConfig would be trivially correct and DRY.
+
+	KEY_CERT_COMBINED_FILE=$keyDir/base-key+cert.pem
+	KEY_FILE=$keyDir/base-key.pem
+	CERT_FILE=$keyDir/base-cert.pem
+
+	ROOT_CERT_COMBINED_FILE=$keyDir/rootCA-key+cert.pem
+	ROOT_KEY_FILE=$keyDir/rootCA-key.pem
+	ROOT_CERT_FILE=$keyDir/rootCA-cert.pem
+	ROOT_SRL_FILE=$keyDir/rootCA-cert.srl
+
+	# Ensure root CA ready
+	test -f $ROOT_CERT_COMBINED_FILE || (
+		# Create a root CA key
+		openssl genrsa -out $ROOT_KEY_FILE 2048
+
+		# Create a root CA cert
+		openssl req -x509 -new -nodes -subj "/C=US/ST=example/L=example/O=example/CN=example" -key $ROOT_KEY_FILE -days 999 -out $ROOT_CERT_FILE
+
+		# Combine for nginx
+		cat $ROOT_KEY_FILE $ROOT_CERT_FILE > $ROOT_CERT_COMBINED_FILE
+
+		bb-log-info "Generated CA certificate"
+	)
+
+	test -f $KEY_CERT_COMBINED_FILE || (
+		# Generate individual files
+		openssl req -x509 -newkey rsa:2048 -subj "/C=US/ST=example/L=example/O=example/CN=example" -keyout $KEY_FILE -out $CERT_FILE -days 999 -nodes
+
+		# Combine for nginx
+		cat $KEY_FILE $CERT_FILE > $KEY_CERT_COMBINED_FILE
+
+		bb-log-info "Generated server certificate"
+	)
+)}
 
 #
 # Run actions

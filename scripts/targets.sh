@@ -20,6 +20,7 @@ function Setup() {
 
 	# Scitran-specific stateful config
 	EnsureBootstrapData
+	EnsureClientCertificates
 }
 
 function Launch() {
