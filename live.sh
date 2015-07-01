@@ -20,21 +20,42 @@
 		Launch
 	else
 		case "$1" in
+
+			# Prepare everything for launch, but don't run
+			setup)
+				Setup ;;
+
+			# Run a command in the venv
 			venv)
-				# Run a command in the venv
 				LoadVenv
 				shift
 				"$@" ;;
-			ci)
-				CI ;;
+
+			# Only regenerate templates
 			template)
 				EnsureConfig ;;
+
+			# Run everything desired for CI
+			ci)
+				CI ;;
+
+			# Create release tarball
 			release)
 				Release ;;
+
+			# Update all code
 			update)
 				Update ;;
+
+			# Create a drone certificate
+			create-drone)
+				shift
+				CreateDrone $@ ;;
+
+			# Print usage
 			*)
-				echo "Usage: $0 {ci|template}" 1>&2;
+				echo "Usage: $0 {setup|venv|template|ci|release|update|create-drone}" 1>&2;
+				echo "Run without args to launch!" 1>&2;
 				exit 1
 			;;
 		esac

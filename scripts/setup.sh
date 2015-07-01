@@ -41,6 +41,24 @@ lDir="$stateDir/logs"
 pDir="$stateDir/pids"
 venv="$stateDir/venv"
 
+keyDir=$stateDir/keys
+mkdir -p $keyDir
+
+# Hackaround: really, there should be another toml template holding all these.
+# load-env.py and template.py should unconditionally load them.
+# Then LoadConfig / EnsureConfig would be trivially correct and DRY.
+
+KEY_CERT_COMBINED_FILE=$keyDir/base-key+cert.pem
+KEY_FILE=$keyDir/base-key.pem
+CERT_FILE=$keyDir/base-cert.pem
+
+ROOT_CERT_COMBINED_FILE=$keyDir/rootCA-key+cert.pem
+ROOT_KEY_FILE=$keyDir/rootCA-key.pem
+ROOT_CERT_FILE=$keyDir/rootCA-cert.pem
+ROOT_SRL_FILE=$keyDir/rootCA-cert.srl
+
+CA_CERTS_COMBINED_FILE=$keyDir/ca-certificates+scitranCA.crt
+
 function EnsurePip() {(
 	set +e
 	bb-flag? pip && return
@@ -268,26 +286,7 @@ function EnsureCode() {(
 	cp ${gDir}/web-config.js code/www/app/
 )}
 
-
 function EnsureClientCertificates() {(
-	keyDir=$stateDir/keys
-	mkdir -p $keyDir
-
-	# Hackaround: really, there should be another toml template holding all these.
-	# load-env.py and template.py should unconditionally load them.
-	# Then LoadConfig / EnsureConfig would be trivially correct and DRY.
-
-	KEY_CERT_COMBINED_FILE=$keyDir/base-key+cert.pem
-	KEY_FILE=$keyDir/base-key.pem
-	CERT_FILE=$keyDir/base-cert.pem
-
-	ROOT_CERT_COMBINED_FILE=$keyDir/rootCA-key+cert.pem
-	ROOT_KEY_FILE=$keyDir/rootCA-key.pem
-	ROOT_CERT_FILE=$keyDir/rootCA-cert.pem
-	ROOT_SRL_FILE=$keyDir/rootCA-cert.srl
-
-	CA_CERTS_COMBINED_FILE=$keyDir/ca-certificates+scitranCA.crt
-
 	# Ensure root CA ready
 	test -f $ROOT_CERT_COMBINED_FILE || (
 		# Create a root CA key
@@ -429,4 +428,35 @@ function PylintAll() {(
 	# C0111: Missing docstring
 	# F0401: Unable to import package - possible problem with pylint usage?
 	pylint -j 0 --reports n --disable=C0111,F0401 $@ 2> >(grep -v "No config file found, using default configuration")
+)}
+
+function CreateDrone() {(
+	drone_name=$1
+
+	if [ -z "$drone_name" ] ; then
+		bb-log-info "Name required to create drone certificate"
+		exit 1
+	fi
+
+	drone_key=$keyDir/client-${drone_name}-key.pem
+	drone_cert=$keyDir/client-${drone_name}-cert.pem
+	drone_csr=$keyDir/client-${drone_name}.csr
+	drone_combined=$keyDir/client-${drone_name}-key+cert.pem
+
+	# Create a key for this drone
+	openssl genrsa -out $drone_key 2048
+
+	# Create a CSR from that key
+	openssl req -new -subj "/C=US/ST=example/L=example/O=example/CN=example" -key $drone_key -out $drone_csr
+
+	# Sign the CSR with root CA
+	openssl x509 -req -in $drone_csr -CA $ROOT_CERT_FILE -CAkey $ROOT_KEY_FILE -CAcreateserial -out $drone_cert -days 999
+
+	# Combine
+	cat $drone_key $drone_cert > $drone_combined
+
+	# Delete CSR
+	rm -f $drone_csr
+
+	bb-log-info "Generated client certificate for $drone_name in $keyDir"
 )}
