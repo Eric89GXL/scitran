@@ -31,6 +31,8 @@
 				EnsureConfig ;;
 			release)
 				Release ;;
+			update)
+				Update ;;
 			*)
 				echo "Usage: $0 {ci|template}" 1>&2;
 				exit 1

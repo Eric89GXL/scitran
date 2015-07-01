@@ -63,3 +63,7 @@ function Release() {
 		tar -s ',^,scitran/,' -cf release.tar ${files[@]}
 	fi
 }
+
+function Update() {
+	find . -type d -name .git -exec git -C "{}/.." pull \;
+}
