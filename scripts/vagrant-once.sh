@@ -11,6 +11,25 @@ echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 chmod 0644 /etc/dpkg/dpkg.cfg.d/02apt-speedup
 chmod 0644 /etc/apt/apt.conf.d/no-cache
 
+# Configure mirror URL
+mirror="http://mirrors.linode.com/ubuntu/"
+
+# Get release codename ("saucy", "trusty", etc)
+codename=`/usr/bin/lsb_release -cs`
+
+# Apt-get sources:
+#	Tell apt to use a nearby mirror. Can *dramatically* increase update speed.
+#	Default Ubuntu sources generated via http://repogen.simplylinux.ch
+cat > /etc/apt/sources.list <<EOF
+###### Ubuntu Main Repos
+deb $mirror $codename main restricted universe
+
+###### Ubuntu Update Repos
+deb $mirror $codename-security main restricted universe
+deb $mirror $codename-updates main restricted universe
+EOF
+chmod 0644 /etc/apt/sources.list
+
 # Set to non-interactive installs
 export DEBIAN_FRONTEND=noninteractive
 
