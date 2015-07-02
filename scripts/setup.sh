@@ -170,10 +170,10 @@ function EnsureReflex() {(
 
 	temp="$( bb-tmp-dir )"
 
-	GOROOT=$golangDir GOPATH=$temp go get -v github.com/cespare/reflex
+	GOROOT=$golangDir GOPATH=$temp PATH=$golangDir/bin:$PATH go get -v github.com/cespare/reflex
 	mv $temp/bin/reflex $reflexLoc
 
-	reflex -h 2>&1 | head -n 1
+	$reflexLoc -h 2>&1 | head -n 1
 	bb-log-info "Reflex installed"
 	bb-flag-set reflex
 )}
