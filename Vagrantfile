@@ -1,7 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-
 Vagrant.configure(2) do |config|
 
 	#
@@ -27,7 +26,7 @@ Vagrant.configure(2) do |config|
 	config.vm.network "forwarded_port", guest: 8444, host: 8444
 
 	# Create a private network, which allows host-only access to the machine using a specific IP.
-	config.vm.network "private_network", type: "dhcp"
+	# config.vm.network "private_network", type: "dhcp"
 
 	# Create a public network, which generally matched to bridged network.
 	# Bridged networks make the machine appear as another physical device on your network.
@@ -53,7 +52,8 @@ Vagrant.configure(2) do |config|
 		]
 	end
 
-	# Install scitran. Currently ran manually
-	config.vm.provision "shell", :path => "./scripts/vagrant-once.sh"
+	# Prepare machine and install scitran
+	config.vm.provision "shell", :path => "./scripts/vagrant-create.sh"
+	config.vm.provision "shell", :path => "./scripts/vagrant-every.sh", :run => "always"
 
 end

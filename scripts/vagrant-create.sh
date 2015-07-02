@@ -49,18 +49,8 @@ packages+=(dstat makepasswd traceroute nmap) # Utilities
 apt-get -y install "${packages[@]}"
 
 # Kill SSH messages
-rm -f /etc/update-motd.d/*
-service ssh restart
-
-# Mongo does not like trying to memory-map files across operating systems.
-# Place the persistent folder on the vagrant host.
-# WILL DESTROY ANY STORED DATA IN THIS INSTANCE.
-rm -rf /scitran/persistent/mongo
-mkdir -p /scitran-mongo
-ln -s /scitran-mongo /scitran/persistent/mongo
+# rm -f /etc/update-motd.d/*
+# service ssh restart
 
 # Start in /scitran
 echo "cd /scitran" >> /home/vagrant/.bashrc
-
-# Bootstrap
-/scitran/live.sh setup
