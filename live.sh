@@ -6,7 +6,7 @@
 	cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 	# You've got boost power
-	BB_WORKSPACE="$HOME/.flywheel"
+	BB_WORKSPACE="persistent/setup"
 	BB_LOG_PREFIX="Flywheel"
 	BB_LOG_FORMAT='${PREFIX}: ${MESSAGE}'
 	source scripts/bashbooster.sh

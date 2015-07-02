@@ -71,6 +71,9 @@ function EnsurePip() {(
 	tempF="$( bb-tmp-file )"
 	curl https://bootstrap.pypa.io/get-pip.py > $tempF
 
+	# We need these for numpy, may as well place here.
+	sudo apt-get install -y build-essential python-dev
+
 	# Install then upgrade pip
 	sudo python $tempF
 	sudo pip install --upgrade pip
@@ -192,8 +195,6 @@ function LoadVenv() {
 	unset PYTHONDONTWRITEBYTECODE
 }
 
-# TODO: probably requires some apt packages
-# build-essential python-dev
 function EnsurePipPackages() {(
 
 	# Pip takes time to run, let's circumvent if up to date
