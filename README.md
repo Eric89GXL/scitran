@@ -1,5 +1,11 @@
 # SciTran – Scientific Data Management
 
+Do Research. Extract Opportunity.
+
+> The Flywheel Scientific Data Management tool can move us into a new generation — to draw much more value and insight from our data by bringing us together. It’s for the shareable age. It will make us extract much more value out of the hard work that we’re doing now in our own separate labs.
+
+> \- [Brian A. Wandell](https://web.stanford.edu/group/vista/cgi-bin/wandell), Professor at Stanford University
+
 ## Installation
 
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
@@ -33,12 +39,12 @@ We will correct this problem soon.
 The first setup will create a config.toml file for you from this [template](templates/config.toml).<br>
 This has everything you need to configure your instance.
 
-
-If you're looking to use scitran in production
+If you're looking to use scitran in production, there are a few things to prepare:
 
 ### Serving valid SSL keys
 
-You'll find a few files in `persistent/keys`
+You'll find a few files in `persistent/keys`. Notably, `base-key+cert.pem` is used to serve scitran.<br>
+Due to our current architecture, SSL is mandatory. Switch this key for one of your own as desired.
 
 ### Setting up your own OAuth provider
 
@@ -61,7 +67,24 @@ For example, to set up with google:
 
 
 You can enter your key and endpoints in config.toml under the `auth` section.<br>
-Right now, only
+Right now, only a few providers have been tested. [Ask us](https://github.com/scitran/scitran/issues/new) if you have problems!
+
+### Configuring 'drone' devices
+
+Scitran currently supports authenticating with client SSL certificates to bypass OAuth for automated access.
+In the future it may be used for adding a [reaper](https://github.com/scitran/reaper) to automatically acquire MRI data.
+
+This is kept on a different port (default 8444) for compatibility reasons and to allow separate network management.
+The web UI is not accessible over this port.
+
+In `persistent/keys` you'll find `rootCA-key.pem` and `rootCA-cert.pem`, which are used for signing drones.
+Unlike the SSL cert, it doesn't matter that this one is self-signed.
+
+To add a drone, run `./live.sh add-drone [drone name]`.<br>
+Signed keys will be saved to  `persistent/keys`.
+
+We are actively discussing this feature, and it may change in the future!
+
 
 ### Note about virtual installs
 
