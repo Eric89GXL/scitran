@@ -344,7 +344,7 @@ def generate_from_template(config_template_in, config_out, nginx_image='', api_i
         'SCITRAN-SITE-NAME': config['site_name'],
         'SCITRAN-API-URL': 'https://' + config['domain'] + ':8080' + '/api',
         'SCITRAN-CENTRAL-URL': ('--central_uri ' + config['central']['api_url']) if config['central']['registered'] else '',
-        'SCITRAN-BASE-URL': 'https://' + config['domain'] + ":" + str(config['https_port']) + '/api/',
+        'SCITRAN-BASE-URL': 'https://' + config['domain'] + '/api/' if config['ssl_terminator'] else 'https://' + config['domain'] + ":" + str(config['https_port']) + '/api/',
         'SCITRAN-DEMO': '--demo' if config['demo'] else '',
         'SCITRAN-INSECURE': '--insecure' if config['insecure'] else '',
         'SCITRAN-AUTH-PROVIDER': config['auth']['provider'],
@@ -785,8 +785,12 @@ def start(args):
         if current_status[k]['status'] != 'not running':
             running += 1
     if running == 3:
-        print "\nCheck out your running site at https://" + config['domain'] + ":" + str(config['https_port'])
-        r = requests.get('https://%s:%s/api' % (config['domain'], config['https_port']), verify=False)
+        if config.get('ssl_terminator'):
+            print "\nCheck out your running site at https://" + config['domain']
+            r = requests.get('https://%s/api' % (config['domain']), verify=False)
+        else:
+            print "\nCheck out your running site at https://" + config['domain']+ ":" + str(config['https_port'])
+            r = requests.get('https://%s:%s/api' % (config['domain'], config['https_port']), verify=False)
         if r.status_code != 200:
             print '\nSomething went wrong...'
         else:
