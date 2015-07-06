@@ -253,6 +253,9 @@ function EnsureConfig() {
 	# Not in a subshell so that subsequent scripting can use config variables
 	LoadConfig
 
+	# Check config version
+	scripts/check-version.py config.toml
+
 	# Some data directories is configurable; use the location we just discovered
 	mkdir -p $lDir $pDir $gDir ${_mongo_location} ${_data_location}
 

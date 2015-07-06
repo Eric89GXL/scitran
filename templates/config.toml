@@ -1,6 +1,7 @@
 
 [flywheel]
 	# Used to identify config file versions and prevent flywheel from running without important keys.
+	# This is only changed when breaking changes are made and does not reflect product version.
 	version = 0
 
 [site]
