@@ -149,6 +149,10 @@ function EnsureNginx() {(
 	bb-flag? nginx && return
 	set -e
 
+	if bb-apt-package? nginx; then
+		previouslyInstalled=true
+	fi
+
 	sudo add-apt-repository -y ppa:nginx/stable
 	bb-log-info "Updating apt..."
 	sudo apt-get update -qq
@@ -160,6 +164,14 @@ function EnsureNginx() {(
 	# It looks like nginx is hard coded to assume it's launched with root.
 	sudo mkdir -p /var/log/nginx/
 	sudo chmod 777 /var/log/nginx/
+
+	# Stop nginx service if it was not previously installed
+	if [ -z $previouslyInstalled ] ; then
+		# Opportunistically stop service; ignore failures
+		if which service > /dev/null; then
+			sudo service nginx stop || true
+		fi
+	fi
 
 	nginx -v
 	bb-log-info Nginx $nginxVer installed.
