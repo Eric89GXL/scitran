@@ -27,6 +27,9 @@ vagrant ssh -c /scitran/live.sh
 
 In either case, you can now check out your local instance at [https://localhost:8443](https://localhost:8443)!
 
+Your first run of `live.sh` will take quite awhile to install; subsequent runs will be much faster.<br>
+This script will start everything it needs (nginx, mongo, uwsgi) and shut them off when you quit (Control-C).
+
 ### Managing processes
 
 Right now, uwsgi is sometimes poorly behaved, and remains running after quitting the script.
