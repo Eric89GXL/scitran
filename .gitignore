@@ -13,3 +13,6 @@
 
 # Distribution
 /*.tar
+
+# Tools
+.idea
