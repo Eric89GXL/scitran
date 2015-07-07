@@ -27,8 +27,21 @@
 
 			# Run a command in the venv
 			venv)
-				LoadVenv
 				shift
+				LoadVenv
+				"$@" ;;
+
+			# Run an API python file, from its folder
+			api)
+				shift
+				LoadVenv
+
+				# This ain't uwsgi; chdir manually in this subshell
+				cd code/api
+
+				# Hackaround for API import problems
+				export PYTHONPATH=../data
+
 				"$@" ;;
 
 			# Only regenerate templates

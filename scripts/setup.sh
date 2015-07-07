@@ -336,69 +336,66 @@ function Reflex() {(
 	$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh | grep -v "getting INI configuration from $gDir/uwsgi.config.ini"
 )}
 
+# This duration needs to be long enough to run and cleanly shut down all infra.
+# Hackaround for a sleep-try-loop that waits for mongo to be up.
+waitSeconds="5"
+
+# Start reflex and get its PID
+# Not in a subshell so you can use $reflexPID
+function StartReflex() {
+	LoadVenv
+
+	# Hackaround for API import problems
+	export PYTHONPATH=../data
+
+	# Supress reflex output decoration and uwsgi's launch message
+	# Launch reflex in the background. Omits the grep to get PID easily -.-
+	$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh &
+	reflexPID=$!
+	bb-log-info "Reflex launched with $reflexPID"
+
+	# Hope that infra is online
+	bb-log-info "Waiting for infrastructre to be ready for bootstrap..."
+	sleep $waitSeconds
+}
+
+function StopReflex() {
+	bb-log-info "Reflex stopping with $reflexPID"
+	kill -INT $reflexPID
+	sleep $waitSeconds
+}
+
 # Add some initial db state if none exists.
 # Should be used before mongo has ever been launched (via Reflex() or otherwise)
 # Hackaround: duplicates Reflex()
 # Hackaround: should be composable, and a run target of live.sh even if database already exists?
 function EnsureBootstrapData() {(
 
-	# This duration needs to be long enough to run and cleanly shut down all infra.
-	# Hackaround for a sleep-try-loop that waits for mongo to be up.
-	waitSeconds="5"
-
 	# Test if mongo has ever been launched before
 	test -f persistent/mongo/mongod.lock || (
 		bb-log-info "Preparing infrastructre for bootstrap..."
-
-		LoadVenv
-
-		# Hackaround for API import problems
-		export PYTHONPATH=../data
-
-		# Supress reflex output decoration and uwsgi's launch message
-		# Launch reflex in the background. Omits the grep to get PID easily -.-
-		$reflexLoc --decoration=plain --config=$gDir/reflex.config.sh > /dev/null &
-		taskPID=$!
-		bb-log-info "Reflex temporarily launched with $taskPID"
-
-		# Hope that infra is online
-		bb-log-info "Waiting for infrastructre to be ready for bootstrap..."
-		sleep $waitSeconds
+		StartReflex
 
 		# Bootstrap
 		bb-log-info "Loading initial users..."
-		(
-			LoadVenv
 
-			# Hackaround for API import problems
-			export PYTHONPATH=../data
+		# This ain't uwsgi; chdir manually in this subshell
+		cd code/api
 
-			# This ain't uwsgi; chdir manually in this subshell
-			cd code/api
+		# Run
+		set +e
+		./bootstrap.py dbinit -j ../../${tDir}/bootstrap.json "${_mongo_uri}"
+		result=$?
 
-			# Run
-			set +e
-			./bootstrap.py dbinit -j ../../${tDir}/bootstrap.json "${_mongo_uri}"
-			result=$?
-
-			# If bootstrapping failed, still shut down infra
-			if [ $result -ne 0 ]; then
-			   bb-log-info "Bootstrapping failed. Cleaning up..."
-			   kill -INT $taskPID
-			   sleep $waitSeconds
-
-			   exit $result;
-			fi
-		)
-
-		# Shut down infra
-		bb-log-info "Finishing bootstrap..."
-		kill -INT $taskPID
-		sleep $waitSeconds
-
-		# Sanity check
-		# ps aux | grep uwsgi | grep -v grep
-		# ps aux | grep mongo | grep -v grep
+		# Shut down reflex, if bootstrapping failed exit.
+		if [ $result -ne 0 ]; then
+			bb-log-info "Bootstrapping failed. Cleaning up..."
+			StopReflex
+			exit $result;
+		else
+			bb-log-info "Finishing bootstrap..."
+			StopReflex
+		fi
 	)
 )}
 
