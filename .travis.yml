@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.7"
+
+# Explicitly disable heuristic cleverness
+install: true
+
+# Do not use containers
+sudo: required
+
+script:
+  - ./live.sh setup
