@@ -6,7 +6,7 @@ import pystache
 import toml
 import re
 
-expectedVersion = 0
+expectedVersion = 1
 
 mapP = sys.argv[1]
 mapping = toml.loads(open(mapP, 'r').read())

@@ -2,7 +2,7 @@
 [flywheel]
 	# Used to identify config file versions and prevent flywheel from running without important keys.
 	# This is only changed when breaking changes are made and does not reflect product version.
-	version = 0
+	version = 1
 
 [site]
 	# Human friendly site name!
@@ -23,7 +23,12 @@
 	insecure = true
 
 [ports]
-	# Port that the web UI will be served on.
+	# The port that will serve on HTTP and redirect to HTTPS.
+	# In production, you likely want to set this to 80.
+	insecure = 8442
+
+	# Port that the web UI will be served via HTTPS.
+	# In production, you likely want to set this to 443.
 	web = 8443
 
 	# A separate port that mandates SSL client certificate authentication.
