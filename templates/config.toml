@@ -1,0 +1,91 @@
+
+[flywheel]
+	# Used to identify config file versions and prevent flywheel from running without important keys.
+	# This is only changed when breaking changes are made and does not reflect product version.
+	version = 0
+
+[site]
+	# Human friendly site name!
+	name   = "Local"
+
+	# Hostname that automated devices (reaper) will use to connect.
+	domain = "localhost"
+
+	# Used for identification to central.
+	id = "local"
+
+	# Demo mode allows any oAuth-approved user to become a user.
+	# Otherwise, each user must be manually whitelisted by an administrator beforehand.
+	demo = false
+
+	# Insecure mode allows manual override by setting ?user=USER in api calls.
+	# For debugging purposes only.
+	insecure = true
+
+[ports]
+	# Port that the web UI will be served on.
+	web = 8443
+
+	# A separate port that mandates SSL client certificate authentication.
+	# Only uses for automated access such as a reaper instance.
+	machine = 8444
+
+[central]
+	# Is this instance registered with central?
+	registered = false
+
+	# Where to find the central service
+	url = "https://sdmc.scitran.io/api"
+
+[auth]
+	provider        = "Google"
+
+	# Default client ID for development environments
+	client_id       = "1052740023071-n20pk8h5uepdua3r8971pc6jrf25lvee.apps.googleusercontent.com"
+
+	id_endpoint     = "https://www.googleapis.com/plus/v1/people/me/openIdConnect"
+	auth_endpoint   = "https://accounts.google.com/o/oauth2/auth"
+	verify_endpoint = "https://www.googleapis.com/oauth2/v1/tokeninfo"
+
+[uwsgi]
+	# What TCP port to serve on.
+	# This will likely need to be reflected in the uri setting below.
+	bind = "[::]:9000"
+
+	# Where nginx can connect to uwsgi.
+	# Only change when running on more than one machine.
+	uri = "localhost:9000"
+
+	# How many concurrent requests to handle
+	threads   = 2
+	processes = 4
+
+[browser]
+	# What version of the API to hit
+	api_prefix = "api"
+
+	# Minutes local cache entries are kept
+	cache_expire = 5
+
+	# Temporary hackaround for missing pagination
+	render_limit = 300
+
+[mongo]
+	# What port to serve mongo on. Mongo defaults to 27017.
+	# This will likely need to be reflected in the uri setting below.
+	port = 9001
+
+	# Where the server can connect to mongo.
+	# Only change when running on more than one machine.
+	uri = "mongodb://localhost:9001/scitran"
+
+	# Do not change; use bind mounts.
+	# mount --bind /folder1 /folder2
+	# Must be relative to project directory.
+	location = "persistent/mongo"
+
+[data]
+	# Do not change; use bind mounts.
+	# mount --bind /folder1 /folder2
+	# Must be relative to project directory.
+	location = "persistent/data"

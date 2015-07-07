@@ -1,0 +1,23 @@
+#
+# This file is auto-generated.
+# Be sure you are editing the copy in templates/.
+#
+# http://docs.mongodb.org/v2.6/reference/configuration-options
+#
+systemLog:
+   destination: file
+   path: "{{lDir}}/mongo.log"
+   logAppend: true
+storage:
+   dbPath: "{{mongo.location}}"
+   smallFiles: true
+   journal:
+      enabled: true
+processManagement:
+   fork: false
+   pidFilePath: "{{pDir}}/mongo.pid"
+net:
+   bindIp: "127.0.0.1"
+   port: 9001
+   unixDomainSocket:
+      enabled: false

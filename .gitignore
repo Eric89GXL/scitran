@@ -1,22 +1,12 @@
 
-# Binaries, checkouts, python, and hroot
-/bin/
+# Binaries, checkouts, python
 /code/
-/lib/
-/graph
 
-# Generated and distribution files
-/venv
-/api/*.pem
-/api/production.ini
-/api/bootstrap.json
-/containers/*.tar*
-/containers/fig.yml
+# Generated files
+/persistent/
+
+# Config file
 /config.toml
-/persistent
-/nginx/*.pem
-/nginx/nginx.conf
-/nginx/ca-certificates+scitranCA.crt
 
 # Development vagrant
 /.vagrant/

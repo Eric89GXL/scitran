@@ -1,0 +1,30 @@
+{
+	"groups": [
+		{
+			"_id": "demo",
+			"name": "Demo Group",
+			"roles": [
+				{
+					"_id": "nathanielkofalt@invenshure.com",
+					"access": "admin"
+				}
+			]
+		}
+	],
+	"users": [
+		{
+			"_id": "nathanielkofalt@invenshure.com",
+			"email": "nathanielkofalt@invenshure.com",
+			"firstname": "Nathaniel",
+			"lastname": "Kofalt",
+			"root": true,
+			"wheel": true
+		}
+	],
+	"drones": [
+		{
+			"_id": "local",
+			"type": "engine"
+		}
+	]
+}

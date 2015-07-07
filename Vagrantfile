@@ -1,9 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-
 Vagrant.configure(2) do |config|
 
+	#
+	# Instructions for boxing an environment, currently not in use
+	#
 	# To create:
 	# vagrant package --output scitran-vX.box
 	#
@@ -19,12 +21,12 @@ Vagrant.configure(2) do |config|
 	config.vm.box_check_update = false
 
 	# Port for humans and machines, respectively
-	config.vm.network "forwarded_port", guest: 44300, host: 44300
-	config.vm.network "forwarded_port", guest: 8080, host: 8080
-	config.vm.network "forwarded_port", guest: 8000, host: 8000
+	# Hackaround: Unlike everything else, these ports are NOT templated from config.toml, update them manually!
+	config.vm.network "forwarded_port", guest: 8443, host: 8443
+	config.vm.network "forwarded_port", guest: 8444, host: 8444
 
 	# Create a private network, which allows host-only access to the machine using a specific IP.
-	config.vm.network "private_network", type: "dhcp"
+	# config.vm.network "private_network", type: "dhcp"
 
 	# Create a public network, which generally matched to bridged network.
 	# Bridged networks make the machine appear as another physical device on your network.
@@ -33,8 +35,6 @@ Vagrant.configure(2) do |config|
 	# Share an additional folder to the guest VM (host, guest, [options...])
 	# Could add (owner: "root", group: "root",) or similar if needed
 	config.vm.synced_folder ".", "/scitran", mount_options: ["rw"]
-
-	config.vm.synced_folder "../gears", "/gears", mount_options: ["rw"]
 
 	config.vm.provider "virtualbox" do |vb|
 		vb.gui = false
@@ -52,7 +52,8 @@ Vagrant.configure(2) do |config|
 		]
 	end
 
-	# Install scitran
-	config.vm.provision "shell", :path => "./scripts/install-simple.sh"
+	# Prepare machine and install scitran
+	config.vm.provision "shell", :path => "./scripts/vagrant-create.sh"
+	config.vm.provision "shell", :path => "./scripts/vagrant-every.sh", :run => "always"
 
 end
