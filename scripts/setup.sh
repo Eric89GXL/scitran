@@ -260,7 +260,7 @@ function EnsureConfig() {
 	mkdir -p $lDir $pDir $gDir ${_mongo_location} ${_data_location}
 
 	# Generate configured templates
-	scripts/template.py config.toml ${tDir}/web-config.js     > ${gDir}/web-config.js
+	scripts/template.py config.toml ${tDir}/web-config.js yes > ${gDir}/web-config.js
 	scripts/template.py config.toml ${tDir}/reflex.config.sh  > ${gDir}/reflex.config.sh
 	scripts/template.py config.toml ${tDir}/mongo.config.yaml > ${gDir}/mongo.config.yaml
 	scripts/template.py config.toml ${tDir}/uwsgi.config.ini  > ${gDir}/uwsgi.config.ini
