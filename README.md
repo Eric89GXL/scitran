@@ -11,8 +11,7 @@ Do Research. Extract Opportunity.
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
 Scitran runs on Ubuntu 64-bit, or inside a virtual environment.
 
-Right now, you will need to edit [templates/bootstrap.json](templates/bootstrap.json) with your name and email address, before launching.<br>
-In the future, this will be [handled for you](https://github.com/scitran/scitran/issues/37).
+Right now, you will need to edit [templates/bootstrap.json](templates/bootstrap.json) with your name and email address, before launching. In the future, this will be [handled for you](https://github.com/scitran/scitran/issues/37).
 
 ```bash
 git clone https://github.com/scitran/scitran.git && cd scitran
