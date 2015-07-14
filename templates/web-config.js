@@ -3,9 +3,6 @@
 // Be sure you are editing the copy in templates/.
 //
 config = {
-	flywheel: {
-		version: {{flywheel.version}},
-	},
 	site: {
 		demo: {{site.demo}},
 		insecure: {{site.insecure}},
