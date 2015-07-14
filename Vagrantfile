@@ -24,6 +24,7 @@ Vagrant.configure(2) do |config|
 	# Hackaround: Unlike everything else, these ports are NOT templated from config.toml, update them manually!
 	config.vm.network "forwarded_port", guest: 8443, host: 8443
 	config.vm.network "forwarded_port", guest: 8444, host: 8444
+	config.vm.network "forwarded_port", guest: 9001, host: 9001
 
 	# Create a private network, which allows host-only access to the machine using a specific IP.
 	# config.vm.network "private_network", type: "dhcp"
