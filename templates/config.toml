@@ -2,7 +2,7 @@
 [flywheel]
 	# Used to identify config file versions and prevent flywheel from running without important keys.
 	# This is only changed when breaking changes are made and does not reflect product version.
-	version = 1
+	version = 1.1
 
 [site]
 	# Human friendly site name!
@@ -88,6 +88,14 @@
 	# mount --bind /folder1 /folder2
 	# Must be relative to project directory.
 	location = "persistent/mongo"
+
+[nginx]
+
+	# What user (and optionally, group) for nginx to use for worker processes.
+	# Only works if you're running as root. Say, for production on ports < 1024.
+	# Disabled if blank, which is the correct setting for development.
+	# Ref http://nginx.org/en/docs/ngx_core_module.html#user
+	user = ""
 
 [data]
 	# Do not change; use bind mounts.
