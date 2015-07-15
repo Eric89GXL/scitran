@@ -112,7 +112,7 @@ Check which version you're at, and read the neccesary sections:
 
 #### To 1.1
 
-Since config v1, we've added and `nginx.user` key.<br>
+Since config v1, we've added a `nginx.user` key.<br>
 This will allow production users running as root to configure permissions for nginx workers.
 
 See [our default `config.toml`](https://github.com/scitran/scitran/blob/master/templates/config.toml) and copy the nginx section to upgrade.
