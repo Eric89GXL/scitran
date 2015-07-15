@@ -6,7 +6,7 @@ import pystache
 import toml
 import re
 
-expectedVersion = 1
+expectedVersion = toml.loads(open('templates/config.toml', 'r').read())['flywheel']['version']
 
 mapP = sys.argv[1]
 mapping = toml.loads(open(mapP, 'r').read())
@@ -24,7 +24,9 @@ if 'flywheel' in mapping and 'version' in mapping['flywheel'] and isinstance( ma
 		# Config is too new; assume broken
 		print >> sys.stderr, ''
 		print >> sys.stderr, 'Your flywheel.version key in config.toml is ' + str(version) + ', expected ' + str(expectedVersion) + '.'
-		print >> sys.stderr, 'See the readme for migration instructions.'
+		print >> sys.stderr, 'See the readme for migration instructions:'
+		print >> sys.stderr, ''
+		print >> sys.stderr, 'https://github.com/scitran/scitran#migrating'
 		sys.exit(2)
 
 else:

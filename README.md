@@ -101,3 +101,6 @@ Move `persistent/mongo` elsewhere before switching to vagrant.
 
 In general, it is not wise to mix host and vagrant usage of a single instance.<br>
 Separate scitran folders are recommended!
+
+
+## Migrating
