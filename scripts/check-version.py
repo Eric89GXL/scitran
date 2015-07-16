@@ -11,7 +11,7 @@ expectedVersion = toml.loads(open('templates/config.toml', 'r').read())['flywhee
 mapP = sys.argv[1]
 mapping = toml.loads(open(mapP, 'r').read())
 
-if 'flywheel' in mapping and 'version' in mapping['flywheel'] and isinstance( mapping['flywheel']['version'], int ):
+if 'flywheel' in mapping and 'version' in mapping['flywheel'] and ( isinstance( mapping['flywheel']['version'], int ) or isinstance( mapping['flywheel']['version'], float )):
 	version = mapping['flywheel']['version']
 
 	if version > expectedVersion:
