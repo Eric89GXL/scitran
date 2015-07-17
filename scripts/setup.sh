@@ -303,20 +303,6 @@ function EnsureCode() {(
 )}
 
 function EnsureClientCertificates() {(
-	# Ensure root CA ready
-	test -f $ROOT_CERT_COMBINED_FILE || (
-		# Create a root CA key
-		openssl genrsa -out $ROOT_KEY_FILE 2048
-
-		# Create a root CA cert
-		openssl req -x509 -new -nodes -subj "/C=US/ST=example/L=example/O=example/CN=example" -key $ROOT_KEY_FILE -days 999 -out $ROOT_CERT_FILE
-
-		# Combine for nginx
-		cat $ROOT_KEY_FILE $ROOT_CERT_FILE > $ROOT_CERT_COMBINED_FILE
-
-		bb-log-info "Generated CA certificate"
-	)
-
 	# Ensure server cert for SSL
 	test -f $KEY_CERT_COMBINED_FILE || (
 		# Generate individual files
@@ -327,11 +313,6 @@ function EnsureClientCertificates() {(
 
 		bb-log-info "Generated server certificate"
 	)
-
-	# Combine the ca-certificates bundle with out our trusted CA certificate
-	# This is a hackaround for having to give nginx a single CA certs package for client cert auth.
-	# Which is itself a hackaround for making nginx more compatible with various SSL client auth libraries (eg, golang).
-	cat /etc/ssl/certs/ca-certificates.crt $ROOT_CERT_FILE > $CA_CERTS_COMBINED_FILE
 )}
 
 #
