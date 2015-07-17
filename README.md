@@ -51,6 +51,21 @@ If you're looking to use scitran in production, there are a few things to prepar
 You'll find a few files in `persistent/keys`. Notably, `base-key+cert.pem` is used to serve scitran.<br>
 Due to our current architecture, SSL is mandatory. Switch this key for one of your own as desired.
 
+### Setting your machine auth secret
+
+Automated requests (such as from a [reaper](https://github.com/scitran/reaper)) will need a shared secret.<br>
+Anyone who knows this secret can make API requests, so you should protect it accordingly.<br>
+
+We recommend using makepasswd to generate a suitable secret:
+
+```bash
+sudo apt-get install -y makepasswd
+
+makepasswd --minchars=20 --maxchars=30
+```
+
+Save this value in your `config.toml` file as `auth.shared_secret`.
+
 ### Setting up your own OAuth provider
 
 Scitran ships with a google OAuth key that will allow you to authenticate to a local instance.<br>
@@ -105,10 +120,18 @@ Separate scitran folders are recommended!
 
 ## Migrating
 
-If your `config.toml` is out of date, `live.sh` will decline to run.<br>
+If your [`config.toml`]((https://github.com/scitran/scitran/blob/master/templates/config.toml)) is out of date, `live.sh` will decline to run.<br>
 Usually, updating can be easily achieved by adding a new config key.
 
 Check which version you're at, and read the neccesary sections:
+
+#### To 1.2
+
+This version removes the `ports.machine` key.<br>
+Due to the changes we're making to authentication, this client-certificate port will no longer be used.
+
+This version also adds the `auth.shared_secret` key.<br>
+See our section about [configuring auth secret](https://github.com/scitran/scitran#serving-valid-ssl-keys) to set up.
 
 #### To 1.1
 
