@@ -103,7 +103,7 @@ Separate scitran folders are recommended!
 
 ## Migrating
 
-If your [`config.toml`]((https://github.com/scitran/scitran/blob/master/templates/config.toml)) is out of date, `live.sh` will decline to run.<br>
+If your [`config.toml`](templates/config.toml) is out of date, `live.sh` will decline to run.<br>
 Usually, updating can be easily achieved by adding a new config key.
 
 Check which version you're at, and read the neccesary sections:
@@ -114,11 +114,11 @@ This version removes the `ports.machine` key.<br>
 Due to the changes we're making to authentication, this client-certificate port will no longer be used.
 
 This version also adds the `auth.shared_secret` key.<br>
-See our section about [configuring auth secret](https://github.com/scitran/scitran#serving-valid-ssl-keys) to set up.
+See our section about [configuring auth secret](#setting-your-machine-auth-secret) to set up.
 
 #### To 1.1
 
 Since config v1, we've added a `nginx.user` key.<br>
 This will allow production users running as root to configure permissions for nginx workers.
 
-See [our default `config.toml`](https://github.com/scitran/scitran/blob/master/templates/config.toml) and copy the nginx section to upgrade.
+See [our default `config.toml`](templates/config.toml) and copy the nginx section to upgrade.
