@@ -89,23 +89,6 @@ For example, to set up with google:
 You can enter your key and endpoints in config.toml under the `auth` section.<br>
 Right now, only a few providers have been tested. [Ask us](https://github.com/scitran/scitran/issues/new) if you have problems!
 
-### Configuring 'drone' devices
-
-Scitran currently supports authenticating with client SSL certificates to bypass OAuth for automated access.
-In the future it may be used for adding a [reaper](https://github.com/scitran/reaper) to automatically acquire MRI data.
-
-This is kept on a different port (default 8444) for compatibility reasons and to allow separate network management.
-The web UI is not accessible over this port.
-
-In `persistent/keys` you'll find `rootCA-key.pem` and `rootCA-cert.pem`, which are used for signing drones.
-Unlike the SSL cert, it doesn't matter that this one is self-signed.
-
-To add a drone, run `./live.sh add-drone [drone name]`.<br>
-Signed keys will be saved to  `persistent/keys`.
-
-We are actively discussing this feature, and it may change in the future!
-
-
 ### Note about virtual installs
 
 Finally, note that if you're trying out scitran with vagrant, the database is not stored on the host.<br>
