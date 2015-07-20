@@ -51,6 +51,21 @@ If you're looking to use scitran in production, there are a few things to prepar
 You'll find a few files in `persistent/keys`. Notably, `base-key+cert.pem` is used to serve scitran.<br>
 Due to our current architecture, SSL is mandatory. Switch this key for one of your own as desired.
 
+### Setting your machine auth secret
+
+Automated requests (such as from a [reaper](https://github.com/scitran/reaper)) will need a shared secret.<br>
+Anyone who knows this secret can make API requests, so you should protect it accordingly.<br>
+
+We recommend using makepasswd to generate a suitable secret:
+
+```bash
+sudo apt-get install -y makepasswd
+
+makepasswd --minchars=20 --maxchars=30
+```
+
+Save this value in your `config.toml` file as `auth.shared_secret`.
+
 ### Setting up your own OAuth provider
 
 Scitran ships with a google OAuth key that will allow you to authenticate to a local instance.<br>
@@ -74,23 +89,6 @@ For example, to set up with google:
 You can enter your key and endpoints in config.toml under the `auth` section.<br>
 Right now, only a few providers have been tested. [Ask us](https://github.com/scitran/scitran/issues/new) if you have problems!
 
-### Configuring 'drone' devices
-
-Scitran currently supports authenticating with client SSL certificates to bypass OAuth for automated access.
-In the future it may be used for adding a [reaper](https://github.com/scitran/reaper) to automatically acquire MRI data.
-
-This is kept on a different port (default 8444) for compatibility reasons and to allow separate network management.
-The web UI is not accessible over this port.
-
-In `persistent/keys` you'll find `rootCA-key.pem` and `rootCA-cert.pem`, which are used for signing drones.
-Unlike the SSL cert, it doesn't matter that this one is self-signed.
-
-To add a drone, run `./live.sh add-drone [drone name]`.<br>
-Signed keys will be saved to  `persistent/keys`.
-
-We are actively discussing this feature, and it may change in the future!
-
-
 ### Note about virtual installs
 
 Finally, note that if you're trying out scitran with vagrant, the database is not stored on the host.<br>
@@ -105,14 +103,22 @@ Separate scitran folders are recommended!
 
 ## Migrating
 
-If your `config.toml` is out of date, `live.sh` will decline to run.<br>
+If your [`config.toml`](templates/config.toml) is out of date, `live.sh` will decline to run.<br>
 Usually, updating can be easily achieved by adding a new config key.
 
 Check which version you're at, and read the neccesary sections:
+
+#### To 1.2
+
+This version removes the `ports.machine` key.<br>
+Due to the changes we're making to authentication, this client-certificate port will no longer be used.
+
+This version also adds the `auth.shared_secret` key.<br>
+See our section about [configuring auth secret](#setting-your-machine-auth-secret) to set up.
 
 #### To 1.1
 
 Since config v1, we've added a `nginx.user` key.<br>
 This will allow production users running as root to configure permissions for nginx workers.
 
-See [our default `config.toml`](https://github.com/scitran/scitran/blob/master/templates/config.toml) and copy the nginx section to upgrade.
+See [our default `config.toml`](templates/config.toml) and copy the nginx section to upgrade.
