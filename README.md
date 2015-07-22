@@ -6,6 +6,8 @@ Do Research. Extract Opportunity.
 
 > \- [Brian A. Wandell](https://web.stanford.edu/group/vista/cgi-bin/wandell), Professor at Stanford University
 
+[![Build Status](https://img.shields.io/travis/scitran/scitran.svg?style=flat-square)](https://travis-ci.org/scitran/scitran)
+
 ## Installation
 
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
