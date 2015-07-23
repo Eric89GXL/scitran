@@ -45,6 +45,7 @@
 	bb = "persistent/setup"
 
 # Versions of prequisite products
+# These must match the URI snippets we will use to download source.
 [version]
 	golang = "1.4.2"
 
@@ -53,7 +54,6 @@
 
 	mongo = "2.6.9"
 
-	# Must match the URI snippet we will use to download the source.
 	nginx = "1.9.3"
 
 # SSL key locations
