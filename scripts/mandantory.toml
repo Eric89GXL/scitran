@@ -48,6 +48,9 @@
 [version]
 	golang = "1.4.2"
 
+	# Required for mongo
+	scons = "2.3.5"
+
 	mongo = "2.6.9"
 
 	# Must match the URI snippet we will use to download the source.

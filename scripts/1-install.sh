@@ -7,6 +7,7 @@
 function DeriveLocations() {
 	golangDir=$BB_WORKSPACE/golang/${_version_golang}
 	nginxDir=$BB_WORKSPACE/nginx/${_version_nginx}
+	sconsDir=$BB_WORKSPACE/scons/${_version_scons}
 	reflexLoc=$BB_WORKSPACE/reflex
 }
 
@@ -20,7 +21,7 @@ function EnsureGolang() {(
 	snip="linux-amd64"
 
 	# bb-download appears to have strange quirks. How about no.
-	wget https://storage.googleapis.com/golang/go${_version_golang}.${snip}.tar.gz --progress=dot:mega -O $temp/$tarF
+	wget https://storage.googleapis.com/golang/go${_version_golang}.${snip}.tar.gz -O $temp/$tarF
 	(
 		cd $temp
 		mkdir -p "$golangDir"
@@ -30,6 +31,21 @@ function EnsureGolang() {(
 	GOROOT=$golangDir $golangDir/bin/go version
 	bb-log-info Golang ${_version_golang} installed.
 	bb-flag-set golang-${_version_golang}
+)}
+
+function EnsureScons() {(
+	test -f $sconsDir/bin/scons || (
+		temp="$( bb-tmp-dir )"
+
+		(
+			cd $temp
+
+			wget https://downloads.sourceforge.net/project/scons/scons/${_version_scons}/scons-${_version_scons}.tar.gz -O download.tar.gz
+			tar -xf download.tar.gz --strip-components 1
+
+			python setup.py install --prefix=$sconsDir
+		)
+	)
 )}
 
 function EnsureMongoDb() {(
