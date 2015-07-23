@@ -6,6 +6,7 @@
 # Save calculated locations. Required for all later functions.
 function DeriveLocations() {
 	golangDir=$BB_WORKSPACE/golang/${_version_golang}
+	nginxDir=$BB_WORKSPACE/nginx/${_version_nginx}
 	reflexLoc=$BB_WORKSPACE/reflex
 }
 
@@ -60,37 +61,31 @@ function EnsureMongoDb() {(
 )}
 
 function EnsureNginx() {(
-	set +e
-	bb-flag? nginx && return
-	set -e
+	test -f $nginxDir/sbin/nginx || (
+		temp="$( bb-tmp-dir )"
 
-	if bb-apt-package? nginx; then
-		previouslyInstalled=true
-	fi
+		cd $temp
+		wget http://nginx.org/download/nginx-${_version_nginx}.tar.gz -O download.tar.gz
+		tar -xf download.tar.gz --strip-components 1
 
-	sudo add-apt-repository -y ppa:nginx/stable
-	bb-log-info "Updating apt..."
-	sudo apt-get update -qq
-	sudo apt-get install -y nginx
+		# Configure
+		#	http://wiki.nginx.org/Install
+		#	http://wiki.nginx.org/InstallOptions
+		./configure \
+			--with-pcre-jit \
+			--with-http_ssl_module \
+			--prefix=${nginxDir} \
+			--conf-path=${_folder_generated}/nginx \
+			--pid-path=${_folder_pids} \
+			--http-log-path=${_folder_logs}/nginx-access.log \
+			--error-log-path=${_folder_logs}/nginx-error.log
 
-	# Hackaround for nginx config not listening to my demand that it not use /var/log/nginx.
-	# A zero-byte error log is generated there, completely ignoring configuration.
-	# It looks like nginx is hard coded to assume it's launched with root.
-	sudo mkdir -p /var/log/nginx/
-	sudo touch /var/log/nginx/error.log
-	sudo chmod -R 777 /var/log/nginx/
+		# Compile, install
+		make -j$cores
+		make install
 
-	# Stop nginx service if it was not previously installed
-	if [ -z $previouslyInstalled ] ; then
-		# Opportunistically stop service; ignore failures
-		if which service > /dev/null; then
-			sudo service nginx stop || true
-		fi
-	fi
-
-	nginx -v
-	bb-log-info Nginx installed.
-	bb-flag-set nginx
+		rm -rf $temp $nginxDir/persistent
+	)
 )}
 
 function EnsureReflex() {(

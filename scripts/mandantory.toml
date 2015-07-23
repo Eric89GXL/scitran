@@ -41,11 +41,17 @@
 	# SSL keys
 	keys = "persistent/keys"
 
+	# Where bash-booster state lives
+	bb = "persistent/setup"
+
 # Versions of prequisite products
 [version]
 	golang = "1.4.2"
 
 	mongo = "2.6.9"
+
+	# Must match the URI snippet we will use to download the source.
+	nginx = "1.9.3"
 
 # SSL key locations
 [keys]
