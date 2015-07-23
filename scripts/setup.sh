@@ -310,6 +310,7 @@ function EnsureTestData() {(
 
 		tar -xvf $temp -C $stateDir/
 		mv $stateDir/testdata-master $testDataDir
+		rm -f $temp
 	)
 )}
 
@@ -377,6 +378,12 @@ function EnsureBootstrapData() {(
 
 	# Test if mongo has ever been launched before
 	test -f persistent/mongo/mongod.lock || (
+
+		# HACKAROUND: 'bootstrap sort' will *DELETE* data... make a copy :(
+		bb-log-info "Making of copy of the example dataset..."
+		temp="$( bb-tmp-dir )"
+		cp -r -v $testDataDir/* $temp
+
 		bb-log-info "Preparing infrastructre for bootstrap..."
 		StartReflex
 
@@ -388,12 +395,28 @@ function EnsureBootstrapData() {(
 
 		# Run
 		set +e
+
+		# Load user(s)
 		./bootstrap.py dbinit -j ../../${tDir}/bootstrap.json "${_mongo_uri}"
 		result=$?
 
 		# Shut down reflex, if bootstrapping failed exit.
 		if [ $result -ne 0 ]; then
-			bb-log-info "Bootstrapping failed. Cleaning up..."
+			bb-log-info "Bootstrapping users failed. Cleaning up..."
+			StopReflex
+			exit $result;
+		fi
+
+		bb-log-info "Loading example dataset..."
+
+		# Load data
+		./bootstrap.py sort -q mongodb://localhost:${_mongo_port}/scitran $temp ../../persistent/data
+		result=$?
+
+		rm -rf $temp
+
+		if [ $result -ne 0 ]; then
+			bb-log-info "Bootstrapping data failed. Cleaning up..."
 			StopReflex
 			exit $result;
 		else
