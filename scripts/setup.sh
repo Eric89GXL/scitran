@@ -39,6 +39,7 @@ stateDir="persistent"
 gDir="$stateDir/generated"
 lDir="$stateDir/logs"
 pDir="$stateDir/pids"
+testDataDir="$stateDir/testdata"
 venv="$stateDir/venv"
 
 keyDir=$stateDir/keys
@@ -294,12 +295,22 @@ function EnsureCode() {(
 	EnsureClone code/apps     master   https://github.com/scitran/apps.git
 	EnsureClone code/www      master   https://github.com/scitran/sdm.git
 
-	# EnsureClone code/testdata master   https://github.com/scitran/testdata.git
 	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
 
 	# Web app demands web-config.js
 	mkdir -p code/www/app
 	cp ${gDir}/web-config.js code/www/app/
+)}
+
+function EnsureTestData() {(
+	test -d $testDataDir || (
+		temp="$( bb-tmp-file )"
+
+		wget https://github.com/scitran/testdata/archive/master.tar.gz -O $temp
+
+		tar -xvf $temp -C $stateDir/
+		mv $stateDir/testdata-master $testDataDir
+	)
 )}
 
 function EnsureClientCertificates() {(
