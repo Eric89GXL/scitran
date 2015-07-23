@@ -108,7 +108,16 @@ Separate scitran folders are recommended!
 If your [`config.toml`](templates/config.toml) is out of date, `live.sh` will decline to run.<br>
 Usually, updating can be easily achieved by adding a new config key.
 
-Check which version you're at, and read the neccesary sections:
+Check which version you're at, and read each neccesary section:
+
+#### To 1.3
+
+This version removes the `mongo.location` and `data.location` keys.
+
+These folders are no longer configurable, by design.<br>
+Bind mounts will allow you to place folders on different drives or locations: `mount --bind /folder1 /folder2`.
+
+Remove both keys to upgrade.
 
 #### To 1.2
 

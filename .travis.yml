@@ -20,4 +20,4 @@ install: true
 sudo: required
 
 script:
-  - ./live.sh setup
+  - ./live.sh ci

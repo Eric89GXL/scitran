@@ -1,11 +1,22 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import toml
 import re
 
 mapP = sys.argv[1]
-mapping = toml.loads(open(mapP, 'r').read())
+
+# Read user and static settings
+settings = toml.loads(open(mapP, 'r').read())
+static = toml.loads(open('scripts/mandantory.toml', 'r').read())
+
+# Combine maps
+mapping = static.copy()
+mapping.update(settings)
+
+# Hackaround for any template that needs an absolute path
+mapping["absPath"]  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def serialize(value, name):
 	if value is None:

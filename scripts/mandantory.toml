@@ -1,0 +1,60 @@
+# Configuration keys that should never change.
+# We do not support what happens if these settings are modified.
+
+
+# DO NOT CHANGE THESE; use bind mounts.
+# mount --bind /folder1 /folder2
+#
+# All locations must be relative to project directory.
+# These locations are hard-coded elsewhere in the project.
+[folder]
+	# Mustache templates for configuring daemons & such
+	templates = "templates"
+
+	# Scripts
+	scripts = "scripts"
+
+	# Where all stateful files other than config.toml must go.
+	state = "persistent"
+
+	# File storage
+	data = "persistent/data"
+
+	# Mongo storage
+	mongo = "persistent/mongo"
+
+	# Generated template results
+	generated = "persistent/generated"
+
+	# Log files
+	logs = "persistent/logs"
+
+	# Pidfiles (and possibly FIFO pipes)
+	pids = "persistent/pids"
+
+	# Our example dataset
+	testdata = "persistent/testdata"
+
+	# Python virtual environment
+	venv = "persistent/venv"
+
+	# SSL keys
+	keys = "persistent/keys"
+
+# Versions of prequisite products
+[version]
+	golang = "1.4.2"
+
+	mongo = "2.6.9"
+
+# SSL key locations
+[keys]
+	# A key for signing certificates
+	key  = "persistent/keys/base-key.pem"
+
+	# A signed certificate
+	cert = "persistent/keys/base-cert.pem"
+
+	# Both files combined.
+	# This is the only key file actually used by scitran.
+	combined = "persistent/keys/base-key+cert.pem"
