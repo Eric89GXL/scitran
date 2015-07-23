@@ -8,6 +8,7 @@ function DeriveLocations() {
 	golangDir=$BB_WORKSPACE/golang/${_version_golang}
 	nginxDir=$BB_WORKSPACE/nginx/${_version_nginx}
 	sconsDir=$BB_WORKSPACE/scons/${_version_scons}
+	mongoDir=$BB_WORKSPACE/mongo/${_version_mongo}
 	reflexLoc=$BB_WORKSPACE/reflex
 }
 
@@ -44,36 +45,30 @@ function EnsureScons() {(
 			tar -xf download.tar.gz --strip-components 1
 
 			python setup.py install --prefix=$sconsDir
+
+			rm -rf $temp
 		)
 	)
 )}
 
 function EnsureMongoDb() {(
 
-	set +e
-	bb-flag? mongodb-${_version_mongo} && return
-	set -e
+	test -d $mongoDir || (
+		temp="$( bb-tmp-dir )"
+		(
+			cd $temp
 
-	# http://docs.mongodb.org/v2.6/tutorial/install-mongodb-on-ubuntu
-	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
-	bb-log-info "Updating apt..."
-	sudo apt-get update -qq
-	sudo apt-get install -y mongodb-org=${_version_mongo} mongodb-org-server=${_version_mongo} mongodb-org-shell=${_version_mongo} mongodb-org-mongos=${_version_mongo} mongodb-org-tools=${_version_mongo}
+			wget https://github.com/mongodb/mongo/archive/r${_version_mongo}.tar.gz -O download.tar.gz
+			tar -xf download.tar.gz --strip-components 1
 
-	echo "mongodb-org hold"        | sudo dpkg --set-selections
-	echo "mongodb-org-server hold" | sudo dpkg --set-selections
-	echo "mongodb-org-shell hold"  | sudo dpkg --set-selections
-	echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
-	echo "mongodb-org-tools hold"  | sudo dpkg --set-selections
+			nice $sconsDir/bin/scons mongod mongo \
+			--disable-warnings-as-errors \
+			-j$cores \
+			--prefix=$mongoDir
 
-	# Potential removal instructions:
-	# sudo apt-get purge mongodb mongodb-clients mongodb-dev mongodb-server
-	# sudo rm -rf /var/log/mongodb /var/lib/mongodb
-
-	mongod --version | head -n 1
-	bb-log-info Mongo ${_version_mongo} installed.
-	bb-flag-set mongodb-${_version_mongo}
+			rm -rf $temp
+		)
+	)
 )}
 
 function EnsureNginx() {(
@@ -100,7 +95,7 @@ function EnsureNginx() {(
 				--error-log-path=${_folder_logs}/nginx-error.log
 
 			# Compile, install
-			make -j$cores
+			nice make -j$cores
 			make install
 
 			rm -rf $temp $nginxDir/persistent

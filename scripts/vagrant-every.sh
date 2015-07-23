@@ -22,10 +22,6 @@ ln -s $mongoVDir $mongoDir
 # Bootstrap
 /scitran/live.sh setup
 
-# Hackaround: stolen from EnsureNginx. See there for reasoning :(
-sudo mkdir -p /var/log/nginx/
-sudo chmod 777 /var/log/nginx/
-
 # And yet more
 sudo chown -R vagrant $mongoVDir
 sudo chown -R vagrant /var/log/nginx/
