@@ -13,10 +13,11 @@ function Setup() {
 	EnsureGolang
 	EnsureReflex
 
-	# Scitran-specific environment, code
+	# Scitran-specific environment, code, example dataset
 	EnsurePipPackages
 	EnsureConfig
 	EnsureCode
+	EnsureTestData
 
 	# Scitran-specific stateful config
 	EnsureClientCertificates

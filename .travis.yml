@@ -1,3 +1,14 @@
+# Multi-OS is in invite-only beta on Travis right now
+# Ref: http://docs.travis-ci.com/user/multi-os/
+#
+# os:
+#   - linux
+#   - osx
+
+# matrix:
+#   allow_failures:
+#     - os: osx
+
 language: python
 python:
   - "2.7"

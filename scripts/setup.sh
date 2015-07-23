@@ -39,6 +39,7 @@ stateDir="persistent"
 gDir="$stateDir/generated"
 lDir="$stateDir/logs"
 pDir="$stateDir/pids"
+testDataDir="$stateDir/testdata"
 venv="$stateDir/venv"
 
 keyDir=$stateDir/keys
@@ -294,12 +295,23 @@ function EnsureCode() {(
 	EnsureClone code/apps     master   https://github.com/scitran/apps.git
 	EnsureClone code/www      master   https://github.com/scitran/sdm.git
 
-	# EnsureClone code/testdata master   https://github.com/scitran/testdata.git
 	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
 
 	# Web app demands web-config.js
 	mkdir -p code/www/app
 	cp ${gDir}/web-config.js code/www/app/
+)}
+
+function EnsureTestData() {(
+	test -d $testDataDir || (
+		temp="$( bb-tmp-file )"
+
+		wget https://github.com/scitran/testdata/archive/master.tar.gz -O $temp
+
+		tar -xvf $temp -C $stateDir/
+		mv $stateDir/testdata-master $testDataDir
+		rm -f $temp
+	)
 )}
 
 function EnsureClientCertificates() {(
@@ -366,6 +378,12 @@ function EnsureBootstrapData() {(
 
 	# Test if mongo has ever been launched before
 	test -f persistent/mongo/mongod.lock || (
+
+		# HACKAROUND: 'bootstrap sort' will *DELETE* data... make a copy :(
+		bb-log-info "Making of copy of the example dataset..."
+		temp="$( bb-tmp-dir )"
+		cp -r -v $testDataDir/* $temp
+
 		bb-log-info "Preparing infrastructre for bootstrap..."
 		StartReflex
 
@@ -377,12 +395,28 @@ function EnsureBootstrapData() {(
 
 		# Run
 		set +e
+
+		# Load user(s)
 		./bootstrap.py dbinit -j ../../${tDir}/bootstrap.json "${_mongo_uri}"
 		result=$?
 
 		# Shut down reflex, if bootstrapping failed exit.
 		if [ $result -ne 0 ]; then
-			bb-log-info "Bootstrapping failed. Cleaning up..."
+			bb-log-info "Bootstrapping users failed. Cleaning up..."
+			StopReflex
+			exit $result;
+		fi
+
+		bb-log-info "Loading example dataset..."
+
+		# Load data
+		./bootstrap.py sort -q mongodb://localhost:${_mongo_port}/scitran $temp ../../persistent/data
+		result=$?
+
+		rm -rf $temp
+
+		if [ $result -ne 0 ]; then
+			bb-log-info "Bootstrapping data failed. Cleaning up..."
 			StopReflex
 			exit $result;
 		else
