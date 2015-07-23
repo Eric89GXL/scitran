@@ -62,9 +62,13 @@ function EnsureMongoDb() {(
 			tar -xf download.tar.gz --strip-components 1
 
 			nice $sconsDir/bin/scons mongod mongo \
-			--disable-warnings-as-errors \
-			-j$cores \
-			--prefix=$mongoDir
+				--disable-warnings-as-errors \
+				-j$cores \
+				--prefix=$mongoDir
+
+			mkdir -p $mongoDir
+			cd build/linux2/normal/mongo
+			cp mongo mongod $mongoDir
 
 			rm -rf $temp
 		)
