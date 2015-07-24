@@ -38,7 +38,9 @@ function DetectPlatform() {
 
 # Automate the sudo parts for your automating pleasure
 function Prepare() {(
-	if [[ $platform == "linux" ]]; then
+	DetectPlatform
+
+	if [[ "$platform" == "linux" ]]; then
 		bb-log-info "Preparing linux system"
 
 		# Ensure .pyc files are generated
