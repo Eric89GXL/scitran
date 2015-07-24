@@ -25,7 +25,7 @@ function DetectPlatform() {
 		cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
 	elif [[ "$unamestr" == 'Darwin' ]]; then
 		platform='mac'
-		cores=4 # whelp
+		cores=$( sysctl -n hw.ncpu )
 	fi
 }
 
