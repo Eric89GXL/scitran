@@ -15,7 +15,7 @@
 --start-service --regex='^code/api/.*\.(py|wsgi)$' --inverse-regex="^(persistent/|code/www/node_modules/|\.vagrant/|code/apps/graph/).*" -- uwsgi {{folder.generated}}/uwsgi.config.ini
 
 # Mongo server
---start-service --glob="does-not-exist" --inverse-regex=".*" -- mongod --config {{folder.generated}}/mongo.config.yaml
+--start-service --glob="does-not-exist" --inverse-regex=".*" -- {{folder.bb}}/mongo/{{version.mongo}}/mongod --config {{folder.generated}}/mongo.config.yaml
 
 # Nginx server
 --start-service --glob="does-not-exist" --inverse-regex=".*" -- {{folder.bb}}/nginx/{{version.nginx}}/sbin/nginx -p {{absPath}} -c {{folder.generated}}/nginx/nginx.conf
