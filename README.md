@@ -6,7 +6,7 @@ Do Research. Extract Opportunity.
 
 > \- [Brian A. Wandell](https://web.stanford.edu/group/vista/cgi-bin/wandell), Professor at Stanford University
 
-[![Build Status](https://img.shields.io/travis/scitran/scitran.svg?style=flat-square)](https://travis-ci.org/scitran/scitran)
+[![Build Status](https://img.shields.io/travis/scitran/scitran/master.svg?style=flat-square)](https://travis-ci.org/scitran/scitran)
 
 ## Installation
 
