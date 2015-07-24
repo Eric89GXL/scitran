@@ -13,14 +13,15 @@ Do Research. Extract Opportunity.
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
 You'll also need to grab a few things, depending on your operating system.
 
-#### Ubuntu 64-bit
-
-For Ubuntu, we have a convenient script target:
+First, grab our repository:
 
 ```bash
-./live.sh prepare
+git clone https://github.com/scitran/scitran.git && cd scitran
 ```
 
+#### Ubuntu 64-bit
+
+We have a convenient script target: `./live.sh prepare`. <br>
 This will ask for sudo to install a couple packages.
 
 #### Vagrant
@@ -37,8 +38,6 @@ Make sure you have your distribution's equivalent of `build-essential`, `libpcre
 ## Installation
 
 ```bash
-git clone https://github.com/scitran/scitran.git && cd scitran
-
 ./live.sh setup
 ```
 
