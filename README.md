@@ -13,7 +13,7 @@ Do Research. Extract Opportunity.
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
 You'll also need to grab a few things, depending on your operating system.
 
-### Ubuntu 64-bit
+#### Ubuntu 64-bit
 
 For Ubuntu, we have a convenient script target:
 
@@ -23,11 +23,11 @@ For Ubuntu, we have a convenient script target:
 
 This will ask for sudo to install a couple packages.
 
-### Vagrant
+#### Vagrant
 
 If you prefer, you can run Scitran inside a [Vagrant](https://www.vagrantup.com/) virtual machine - skip straight to installation!
 
-### Other
+#### Other
 
 Platforms not listed here are not officially supported yet, but should work fine.
 
