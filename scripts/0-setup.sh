@@ -46,7 +46,8 @@ function Prepare() {(
 		# Ensure .pyc files are generated
 		unset PYTHONDONTWRITEBYTECODE
 
-		sudo apt-get install -y build-essential python-dev python-virtualenv
+		# TODO: could use bb-apt? and bb-yum? here to support more distros
+		sudo apt-get install -y build-essential python-dev python-virtualenv libpcre3-dev libssl-dev
 
 		# Download pip bootstrapper
 		tempF="$( bb-tmp-file )"

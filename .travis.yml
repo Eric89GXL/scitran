@@ -18,6 +18,8 @@ addons:
     packages:
       - build-essential
       - python-dev
+      - libpcre3-dev
+      - libssl-dev
       # Current python CI provider already has these
       # - python-virtualenv
       # - python-pip
