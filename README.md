@@ -31,7 +31,7 @@ If you prefer, you can run Scitran inside a [Vagrant](https://www.vagrantup.com/
 
 Platforms not listed here are not officially supported yet, but should work fine.
 
-Make sure you have your distribution's equivalent of `build-essential`, `python-dev`, `python-virtualenv`, and pip before continuing.
+Make sure you have your distribution's equivalent of `build-essential`, `libpcre3-dev`, `libssl-dev`, `python-dev`, `python-virtualenv`, and pip before continuing.
 
 
 ## Installation
