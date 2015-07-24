@@ -58,8 +58,10 @@ function EnsureMongoDb() {(
 		(
 			cd $temp
 
-			wget https://github.com/mongodb/mongo/archive/r${_version_mongo}.tar.gz -O download.tar.gz
-			tar -xf download.tar.gz --strip-components 1
+			git clone https://github.com/mongodb/mongo.git -b r${_version_mongo} --depth 1 $temp
+
+			# wget https://github.com/mongodb/mongo/archive/r${_version_mongo}.tar.gz -O download.tar.gz
+			# tar -xf download.tar.gz --strip-components 1
 
 			nice $sconsDir/bin/scons mongod mongo \
 				--disable-warnings-as-errors \
