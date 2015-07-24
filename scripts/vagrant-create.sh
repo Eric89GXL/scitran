@@ -51,6 +51,9 @@ packages+=(htop nano git screen unison curl wget p7zip-full) # Basics
 packages+=(dstat makepasswd traceroute nmap) # Utilities
 apt-get -y install "${packages[@]}"
 
+# Install scitran packages
+/scitran/live.sh prepare
+
 # Kill SSH messages
 # rm -f /etc/update-motd.d/*
 # service ssh restart
