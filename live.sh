@@ -67,9 +67,15 @@
 			secret)
 				PrintSecret ;;
 
+			reset-db)
+				rm -rf persistent/mongo
+				Setup
+				Install
+				Configure ;;
+
 			# Print usage
 			*)
-				echo "Usage: $0 {setup|venv|api|template|ci|release|update}" 1>&2;
+				echo "Usage: $0 {setup|venv|api|template|ci|release|update|secret|reset-db}" 1>&2;
 				echo "Run without args to launch!" 1>&2;
 				exit 1
 			;;
