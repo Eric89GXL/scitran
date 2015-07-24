@@ -36,10 +36,28 @@ function DetectPlatform() {
 	fi
 }
 
-function EnsurePackages() {
-	# Idempotently install apt packages
-	bb-apt-install ca-certificates gfortran libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 python-dev python-pip python-virtualenv uuid-runtime
-}
+# Automate the sudo parts for your automating pleasure
+function Prepare() {(
+	if [[ $platform == "linux" ]]; then
+		bb-log-info "Preparing linux system"
+
+		# Ensure .pyc files are generated
+		unset PYTHONDONTWRITEBYTECODE
+
+		sudo apt-get install -y build-essential python-dev python-virtualenv
+
+		# Download pip bootstrapper
+		tempF="$( bb-tmp-file )"
+		curl https://bootstrap.pypa.io/get-pip.py > $tempF
+
+		# Install then upgrade pip
+		sudo python $tempF
+		sudo pip install --upgrade pip
+
+	else
+		bb-log-info "Skipping preparation as no instructions for your platform"
+	fi
+)}
 
 function LoadVenv() {
 	# Ensure .pyc files are generated

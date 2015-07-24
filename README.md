@@ -8,10 +8,33 @@ Do Research. Extract Opportunity.
 
 [![Build Status](https://img.shields.io/travis/scitran/scitran/master.svg?style=flat-square)](https://travis-ci.org/scitran/scitran)
 
-## Installation
+## Setup
 
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
-Scitran runs on Ubuntu 64-bit, or inside a virtual environment.
+You'll also need to grab a few things, depending on your operating system.
+
+### Ubuntu 64-bit
+
+For Ubuntu, we have a convenient script target:
+
+```bash
+./live.sh prepare
+```
+
+This will ask for sudo to install a couple packages.
+
+### Vagrant
+
+If you prefer, you can run Scitran inside a [Vagrant](https://www.vagrantup.com/) virtual machine - skip straight to installation!
+
+### Other
+
+Platforms not listed here are not officially supported yet, but should work fine.
+
+Make sure you have your distribution's equivalent of `build-essential`, `python-dev`, `python-virtualenv`, and pip before continuing.
+
+
+## Installation
 
 ```bash
 git clone https://github.com/scitran/scitran.git && cd scitran

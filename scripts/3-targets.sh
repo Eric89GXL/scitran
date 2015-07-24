@@ -8,7 +8,6 @@
 function Setup() {
 	DetectPlatform
 
-	EnsurePackages
 	EnsurePipPackages
 	EnsureConfig
 
@@ -135,6 +134,9 @@ function PrintSecret() {
 
 # What should our CI target run?
 function CiTarget() {
+	DetectPlatform
+	Prepare
+
 	Setup
 	Install
 
