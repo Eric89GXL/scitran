@@ -9,15 +9,25 @@
 #   allow_failures:
 #     - os: osx
 
+# Use containers
+sudo: false
+
+# Without root, we have to get CI to install apt pkgs for us
+addons:
+  apt:
+    packages:
+      - build-essential
+      - python-dev
+      # Python CI provider allegedly already has these
+      # - python-virtualenv
+      # - python-pip
+
 language: python
 python:
   - "2.7"
 
 # Explicitly disable heuristic cleverness
 install: true
-
-# Do not use containers
-sudo: required
 
 script:
   - ./live.sh ci

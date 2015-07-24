@@ -64,8 +64,6 @@ function PrintSecret() {
 
 # What should our CI target run?
 function CI() {
-	DetectPlatform
-	Prepare
 	Setup
 	Install
 	Configure
