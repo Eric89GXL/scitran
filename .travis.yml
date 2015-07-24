@@ -18,7 +18,7 @@ addons:
     packages:
       - build-essential
       - python-dev
-      # Python CI provider allegedly already has these
+      # Current python CI provider already has these
       # - python-virtualenv
       # - python-pip
 
