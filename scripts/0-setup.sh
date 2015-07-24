@@ -17,6 +17,8 @@
 # Detect operating system
 function DetectPlatform() {
 	platform='unknown'
+	cores=4
+
 	unamestr=`uname`
 	if [[ "$unamestr" == 'Linux' ]]; then
 		platform='linux'
@@ -27,38 +29,27 @@ function DetectPlatform() {
 	fi
 }
 
-function EnsurePip() {(
-	set +e
-	bb-flag? pip && return
-	set -e
+# Automate the sudo parts for your automating pleasure
+function Prepare() {(
+	if [[ $platform == "linux" ]]; then
+		bb-log-info "Preparing linux system"
 
-	# Ensure .pyc files are generated
-	unset PYTHONDONTWRITEBYTECODE
+		# Ensure .pyc files are generated
+		unset PYTHONDONTWRITEBYTECODE
 
-	# Download pip bootstrapper
-	tempF="$( bb-tmp-file )"
-	curl https://bootstrap.pypa.io/get-pip.py > $tempF
+		sudo apt-get install -y build-essential python-dev python-virtualenv
 
-	# We need these for numpy, may as well place here.
-	sudo apt-get install -y build-essential python-dev
+		# Download pip bootstrapper
+		tempF="$( bb-tmp-file )"
+		curl https://bootstrap.pypa.io/get-pip.py > $tempF
 
-	# Install then upgrade pip
-	sudo python $tempF
-	sudo pip install --upgrade pip
+		# Install then upgrade pip
+		sudo python $tempF
+		sudo pip install --upgrade pip
 
-	bb-log-info "Pip installed"
-	bb-flag-set pip
-)}
-
-function EnsureVirtualEnv() {(
-	set +e
-	bb-flag? venv && return
-	set -e
-
-	sudo apt-get install -y python-virtualenv
-
-	bb-log-info "Virtualenv installed"
-	bb-flag-set venv
+	else
+		bb-log-info "Skipping preparation as no instructions for your platform"
+	fi
 )}
 
 
