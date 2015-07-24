@@ -32,7 +32,7 @@ function DetectPlatform() {
 		fi;
 	elif [[ "$unamestr" == 'Darwin' ]]; then
 		platform='mac'
-		cores=4 # whelp
+		cores=$( sysctl -n hw.ncpu )
 	fi
 }
 
