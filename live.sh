@@ -29,6 +29,9 @@
 				Install
 				Configure ;;
 
+			prepare)
+				Prepare ;;
+
 			# Run a command in the venv
 			venv)
 				shift
