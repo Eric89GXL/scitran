@@ -8,14 +8,14 @@
 # Python server
 # Trickery: actually just launch and never re-launch; send signals instead with next rule!
 # Uses reflex as an utterly simple daemon manager for development simplicity.
---start-service --glob="does-not-exist" --inverse-regex=".*" -- uwsgi {{gDir}}/uwsgi.config.ini
+--start-service --glob="does-not-exist" --inverse-regex=".*" -- uwsgi {{folder.generated}}/uwsgi.config.ini
 
 # Mongo server
---start-service --glob="does-not-exist" --inverse-regex=".*" -- mongod --config {{gDir}}/mongo.config.yaml
+--start-service --glob="does-not-exist" --inverse-regex=".*" -- mongod --config {{folder.generated}}/mongo.config.yaml
 
 # Nginx server
---start-service --glob="does-not-exist" --inverse-regex=".*" -- nginx -p {{absPath}} -c {{gDir}}/nginx/nginx.conf
+--start-service --glob="does-not-exist" --inverse-regex=".*" -- nginx -p {{absPath}} -c {{folder.generated}}/nginx/nginx.conf
 
 # Gracefully reload uwsgi on file change
 # Pidfile also used in uwsgi.config.ini
---regex='.*\.py$' --inverse-regex="persistent/.*" -- bash -c "kill -HUP `cat {{pDir}}/uwsgi.pid`"
+--regex='.*\.py$' --inverse-regex="persistent/.*" -- bash -c "kill -HUP `cat {{folder.pids}}/uwsgi.pid`"

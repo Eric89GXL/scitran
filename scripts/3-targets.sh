@@ -1,32 +1,47 @@
-# User-level targets to run, notes from setup.sh apply.
+# User-level targets to run, aggregating a loose dep tree
+
+# TODO: review and possibly use http://www.bashbooster.net/#task
 
 
-# Idempotent environment
+# Install basic deps and load config.
+# Likely required by all other targets.
 function Setup() {
 	DetectPlatform
 
-	# Install basic deps
 	EnsurePip
 	EnsureVirtualEnv
-	EnsureMongoDb
-	EnsureNginx
-	EnsureGolang
-	EnsureReflex
-
-	# Scitran-specific environment, code, example dataset
 	EnsurePipPackages
 	EnsureConfig
+
+	DeriveLocations
+}
+
+# Install prequisites
+function Install() {
+	EnsureNginx
+	EnsureMongoDb
+	EnsureGolang
+	EnsureReflex
+}
+
+# Scitran-specific environment, code, example dataset
+# Will temporarily launch platform for bootstrapping purposes
+function Configure() {
+	EnsureTemplates
 	EnsureCode
 	EnsureTestData
 
-	# Scitran-specific stateful config
+	# Scitran-specific stateful setup
 	EnsureClientCertificates
 	EnsureBootstrapData
 }
 
+# Default: run the platform
 function Launch() {
 	bb-log-info "Preparing environment"
 	Setup
+	Install
+	Configure
 
 	# Pylint has many complaints ATM; reconcile as separate project
 	# bb-log-info "Checking server code"
@@ -42,9 +57,17 @@ function Launch() {
 	bb-log-info "Stopped."
 }
 
+# Print the shared secret
+function PrintSecret() {
+	Setup
+	echo ${_auth_shared_secret}
+}
+
+# What should our CI target run?
 function CI() {
 	Setup
-	PylintAll server.py
+	Install
+	Configure
 }
 
 function Release() {

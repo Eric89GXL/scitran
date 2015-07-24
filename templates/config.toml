@@ -2,7 +2,7 @@
 [flywheel]
 	# Used to identify config file versions and prevent flywheel from running without important keys.
 	# This is only changed when breaking changes are made and does not reflect product version.
-	version = 1.2
+	version = 1.3
 
 [site]
 	# Human friendly site name!
@@ -86,11 +86,6 @@
 	# Only change when running on more than one machine.
 	uri = "mongodb://localhost:9001/scitran"
 
-	# Do not change; use bind mounts.
-	# mount --bind /folder1 /folder2
-	# Must be relative to project directory.
-	location = "persistent/mongo"
-
 [nginx]
 
 	# What user (and optionally, group) for nginx to use for worker processes.
@@ -98,9 +93,3 @@
 	# Disabled if blank, which is the correct setting for development.
 	# Ref http://nginx.org/en/docs/ngx_core_module.html#user
 	user = ""
-
-[data]
-	# Do not change; use bind mounts.
-	# mount --bind /folder1 /folder2
-	# Must be relative to project directory.
-	location = "persistent/data"

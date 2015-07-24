@@ -6,16 +6,16 @@
 #
 systemLog:
    destination: file
-   path: "{{lDir}}/mongo.log"
+   path: "{{folder.logs}}/mongo.log"
    logAppend: true
 storage:
-   dbPath: "{{mongo.location}}"
+   dbPath: "{{folder.mongo}}"
    smallFiles: true
    journal:
       enabled: true
 processManagement:
    fork: false
-   pidFilePath: "{{pDir}}/mongo.pid"
+   pidFilePath: "{{folder.pids}}/mongo.pid"
 net:
    bindIp: "127.0.0.1"
    port: 9001

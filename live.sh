@@ -12,8 +12,10 @@
 	source scripts/bashbooster.sh
 
 	# Control flow
-	source scripts/setup.sh
-	source scripts/targets.sh
+	source scripts/0-setup.sh
+	source scripts/1-install.sh
+	source scripts/2-run.sh
+	source scripts/3-targets.sh
 
 	# Run default or specific target
 	if [ -z "$1" ] ; then
@@ -23,7 +25,9 @@
 
 			# Prepare everything for launch, but don't run
 			setup)
-				Setup ;;
+				Setup
+				Install
+				Configure ;;
 
 			# Run a command in the venv
 			venv)
@@ -60,14 +64,12 @@
 			update)
 				Update ;;
 
-			# Create a drone certificate
-			create-drone)
-				shift
-				CreateDrone $@ ;;
+			secret)
+				PrintSecret ;;
 
 			# Print usage
 			*)
-				echo "Usage: $0 {setup|venv|template|ci|release|update|create-drone}" 1>&2;
+				echo "Usage: $0 {setup|venv|api|template|ci|release|update}" 1>&2;
 				echo "Run without args to launch!" 1>&2;
 				exit 1
 			;;
