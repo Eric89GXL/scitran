@@ -1,11 +1,11 @@
 {
 	"groups": [
 		{
-			"_id": "demo",
-			"name": "Demo Group",
+			"_id": "SciTran",
+			"name": "Scientific Transparency",
 			"roles": [
 				{
-					"_id": "nathanielkofalt@invenshure.com",
+					"_id": "your_address@email.com",
 					"access": "admin"
 				}
 			]
@@ -13,10 +13,10 @@
 	],
 	"users": [
 		{
-			"_id": "nathanielkofalt@invenshure.com",
-			"email": "nathanielkofalt@invenshure.com",
-			"firstname": "Nathaniel",
-			"lastname": "Kofalt",
+			"_id": "your_address@email.com",
+			"email": "your_address@email.com",
+			"firstname": "YourFirstName",
+			"lastname": "YourLastName",
 			"root": true,
 			"wheel": true
 		}
