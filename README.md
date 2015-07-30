@@ -30,8 +30,6 @@ Finish your install with:
 
 This will prepare a user account and an example dataset to try out.
 
-Right now, you will need to edit [templates/bootstrap.json](templates/bootstrap.json) with your name and email address, before configuring. In the future, this will be [handled for you](https://github.com/scitran/scitran/issues/37).
-
 ### Vagrant
 
 If you're not using Linux, you'll need to use [Vagrant](https://www.vagrantup.com).<br>
