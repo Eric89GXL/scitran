@@ -30,12 +30,13 @@
 
 			# Prepare everything for launch, but don't run
 			setup)
-				Setup
-				Install
-				Configure ;;
+				SetupTarget ;;
+
+			configure)
+				ConfigureTarget ;;
 
 			run)
-				Launch ;;
+				RunTarget ;;
 
 			# Run a command in the venv
 			venv)
@@ -62,7 +63,7 @@
 
 			# Run everything desired for CI
 			ci)
-				CI ;;
+				CiTarget ;;
 
 			# Create release tarball
 			release)

@@ -22,22 +22,47 @@ function Install() {
 	EnsureMongoDb
 	EnsureGolang
 	EnsureReflex
+	EnsureTemplates
+	EnsureCode
+	EnsureClientCertificates
 }
 
 # Scitran-specific environment, code, example dataset
 # Will temporarily launch platform for bootstrapping purposes
 function Configure() {
-	EnsureTemplates
-	EnsureCode
-	EnsureTestData
 
 	# Scitran-specific stateful setup
-	EnsureClientCertificates
+	EnsureTestData
 	EnsureBootstrapData
 }
 
+
+# No-prompt initial setup
+function SetupTarget() {
+	Setup
+	Install
+
+	bb-log-info "Your shared secret is: ${_auth_shared_secret}"
+
+	echo
+	echo "Setup complete! You should now edit config.toml to configure your instance."
+	echo "After that, continue with: ./live.sh configure"
+	echo
+}
+
+function ConfigureTarget() {
+	Setup
+	Install
+	Configure
+
+	echo
+	echo "You are now ready to launch scitran!"
+	echo "Try it out with: ./live.sh run"
+	echo
+}
+
 # Default: run the platform
-function Launch() {
+function RunTarget() {
 	bb-log-info "Preparing environment"
 	Setup
 	Install
@@ -64,7 +89,7 @@ function PrintSecret() {
 }
 
 # What should our CI target run?
-function CI() {
+function CiTarget() {
 	Setup
 	Install
 	Configure
