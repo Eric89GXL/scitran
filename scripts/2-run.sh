@@ -36,7 +36,7 @@ function StartReflex() {
 	bb-log-info "Reflex launched with $reflexPID"
 
 	# Hope that infra is online
-	bb-log-info "Waiting for infrastructre to be ready for bootstrap..."
+	bb-log-info "Waiting for infrastructure to be ready for bootstrap..."
 	sleep $waitSeconds
 }
 
