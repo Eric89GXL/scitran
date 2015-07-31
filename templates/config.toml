@@ -20,7 +20,7 @@
 
 	# Insecure mode allows manual override by setting ?user=USER in api calls.
 	# For debugging purposes only.
-	insecure = true
+	insecure = false
 
 [ports]
 	# The port that will serve on HTTP and redirect to HTTPS.
