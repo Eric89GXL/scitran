@@ -13,25 +13,38 @@ Do Research. Extract Opportunity.
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
 Scitran runs on Ubuntu 64-bit, or inside a virtual environment.
 
-Right now, you will need to edit [templates/bootstrap.json](templates/bootstrap.json) with your name and email address, before launching. In the future, this will be [handled for you](https://github.com/scitran/scitran/issues/37).
-
 ```bash
 git clone https://github.com/scitran/scitran.git && cd scitran
 
-./live.sh
+./live.sh setup
 ```
 
-If you're not using Linux, the command is the same but inside [Vagrant](https://www.vagrantup.com):
+This will install everything scitran needs and generate things you need, such as a config file.<br>
+If desired, you can edit your config file now, or you can come back later. Check out [configuring](#configuring) for more info.
+
+Finish your install with:
 
 ```bash
-vagrant up
-
-vagrant ssh -c /scitran/live.sh
+./live.sh configure
 ```
 
-In either case, you can now check out your local instance at [https://localhost:8443](https://localhost:8443)!
+This will prepare a user account and an example dataset to try out.
 
-Your first run of `live.sh` will take quite awhile to install; subsequent runs will be much faster.
+### Vagrant
+
+If you're not using Linux, you'll need to use [Vagrant](https://www.vagrantup.com).<br>
+From the scitran folder, simply run `vagrant up && vagrant ssh`, then use the same commands above.
+
+## Running
+
+Once you have setup and configured scitran, running is as easy as:
+
+```bash
+./live.sh run
+```
+
+Check out your new local instance at [https://localhost:8443](https://localhost:8443)!
+
 This script will start everything it needs (nginx, mongo, uwsgi) and run them until you quit (Control-C).
 
 ### Managing processes

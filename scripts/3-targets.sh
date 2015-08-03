@@ -22,30 +22,105 @@ function Install() {
 	EnsureMongoDb
 	EnsureGolang
 	EnsureReflex
-}
-
-# Scitran-specific environment, code, example dataset
-# Will temporarily launch platform for bootstrapping purposes
-function Configure() {
 	EnsureTemplates
 	EnsureCode
-	EnsureTestData
-
-	# Scitran-specific stateful setup
 	EnsureClientCertificates
-	EnsureBootstrapData
 }
 
-# Default: run the platform
-function Launch() {
-	bb-log-info "Preparing environment"
+# Scitran-specific stateful setup
+# Will temporarily launch platform for bootstrapping purposes
+function Configure() {
+	bb-log-info "Configuring"
+
+	bb-log-info "Preparing infrastructre for bootstrap..."
+	StartReflex
+
+	echo
+	echo "You probably want to add an initial superuser account to login."
+	echo "This will let you into the system and add more users."
+	echo
+
+	while true; do
+		read -p "Would you like to load a superuser account? [y/n] " yn
+		case $yn in
+			[Yy]* ) go=true;  break;;
+			[Nn]* ) go=false; break;;
+			* ) echo "Please answer yes or no.";;
+		esac
+	done
+
+	if $go; then
+		echo
+		echo "This account's email address needs to be an email that can be used to login with google."
+		echo "For example, a gmail account."
+		echo
+
+		read -p "Enter your email address: " email
+		read -p "Enter your first name: " fname
+		read -p "Enter your last name: " lname
+		echo
+
+		# Simple alternative to more mustache templating
+		temp="$( bb-tmp-file )"
+		cat templates/bootstrap.json | sed "s/your_address@email.com/$email/g" | sed "s/YourFirstName/$fname/g" | sed "s/YourLastName/$lname/g" > $temp
+
+		BootStrapUsers $temp
+	fi
+
+	echo
+	echo "You probably want to load an initial dataset to view & manage."
+	echo "This will make it easier to understand how scitran works.."
+	echo
+
+	while true; do
+		read -p "Would you like to load an initial dataset to view? [y/n] " yn
+		case $yn in
+			[Yy]* ) go=true;  break;;
+			[Nn]* ) go=false; break;;
+			* ) echo "Please answer yes or no.";;
+		esac
+	done
+	echo
+
+	if $go; then
+		EnsureTestData
+		BootStrapData
+	fi
+
+	bb-log-info "Finishing bootstrap..."
+	StopReflex
+}
+
+
+# No-prompt initial setup
+function SetupTarget() {
+	Setup
+	Install
+
+	bb-log-info "Your shared secret is: ${_auth_shared_secret}"
+
+	echo
+	echo "Setup complete! You should now edit config.toml to configure your instance."
+	echo "After that, continue with: ./live.sh configure"
+	echo
+}
+
+function ConfigureTarget() {
 	Setup
 	Install
 	Configure
 
-	# Pylint has many complaints ATM; reconcile as separate project
-	# bb-log-info "Checking server code"
-	# PylintCritical code/api/
+	echo
+	echo "You are now ready to launch scitran!"
+	echo "Try it out with: ./live.sh run"
+	echo
+}
+
+# Default: run the platform
+function RunTarget() {
+	bb-log-info "Preparing environment"
+	Setup
+	Install
 
 	# Run
 	# Hackaround: control-C doesn't show reflex cleanup ops.
@@ -64,10 +139,13 @@ function PrintSecret() {
 }
 
 # What should our CI target run?
-function CI() {
+function CiTarget() {
 	Setup
 	Install
-	Configure
+
+	# No-prompt varient of configure target
+	EnsureTestData
+	EnsureBootstrapData
 }
 
 function Release() {

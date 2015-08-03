@@ -122,7 +122,12 @@ function LoadConfig() {
 function EnsureConfig() {
 
 	test -f config.toml || (
-		cp templates/config.toml config.toml
+		# Generate a shared secret
+		secret=`uuidgen --random /dev/random | sed 's/-//g'`
+
+		# Set shared secret while copying template
+		cat templates/config.toml | sed 's/"change-me"/"'$secret'"/g' > config.toml
+
 		bb-log-info "Generated default config file"
 	)
 

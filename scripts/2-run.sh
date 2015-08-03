@@ -36,7 +36,7 @@ function StartReflex() {
 	bb-log-info "Reflex launched with $reflexPID"
 
 	# Hope that infra is online
-	bb-log-info "Waiting for infrastructre to be ready for bootstrap..."
+	bb-log-info "Waiting for infrastructure to be ready for bootstrap..."
 	sleep $waitSeconds
 }
 
@@ -46,6 +46,56 @@ function StopReflex() {
 	sleep $waitSeconds
 }
 
+# Takes bootstrap file location as param, relative to code/api folder.
+function BootStrapUsers() {(
+	bb-log-info "Loading initial users..."
+
+	# This ain't uwsgi; chdir manually in this subshell
+	cd code/api
+
+	# Run
+	set +e
+
+	# Load user(s)
+	./bootstrap.py dbinit -j $1 "${_mongo_uri}"
+	result=$?
+
+	# Shut down reflex, if bootstrapping failed exit.
+	if [ $result -ne 0 ]; then
+		bb-log-info "Bootstrapping users failed. Cleaning up..."
+		StopReflex
+		exit $result;
+	fi
+)}
+
+function BootStrapData() {(
+	# HACKAROUND: 'bootstrap sort' will *DELETE* data... make a copy :(
+	bb-log-info "Making of copy of the example dataset..."
+	temp="$( bb-tmp-dir )"
+	cp -r ${_folder_testdata}/* $temp
+
+	bb-log-info "Loading example dataset..."
+
+	# This ain't uwsgi; chdir manually in this subshell
+	cd code/api
+
+	# Run
+	set +e
+
+	# Load data
+	# TODO: change to uri
+	./bootstrap.py sort -q mongodb://localhost:${_mongo_port}/scitran $temp ../../persistent/data
+	result=$?
+
+	rm -rf $temp
+
+	if [ $result -ne 0 ]; then
+		bb-log-info "Bootstrapping data failed. Cleaning up..."
+		StopReflex
+		exit $result;
+	fi
+)}
+
 # Add some initial db state if none exists.
 # Should be used before mongo has ever been launched (via Reflex() or otherwise)
 # Hackaround: duplicates Reflex()
@@ -54,52 +104,14 @@ function EnsureBootstrapData() {(
 
 	# Test if mongo has ever been launched before
 	test -f persistent/mongo/mongod.lock || (
-
-		# HACKAROUND: 'bootstrap sort' will *DELETE* data... make a copy :(
-		bb-log-info "Making of copy of the example dataset..."
-		temp="$( bb-tmp-dir )"
-		cp -r ${_folder_testdata}/* $temp
-
 		bb-log-info "Preparing infrastructre for bootstrap..."
 		StartReflex
 
-		# Bootstrap
-		bb-log-info "Loading initial users..."
+		BootStrapUsers ../../${_folder_templates}/bootstrap.json
+		BootStrapData
 
-		# This ain't uwsgi; chdir manually in this subshell
-		cd code/api
-
-		# Run
-		set +e
-
-		# Load user(s)
-		./bootstrap.py dbinit -j ../../${_folder_templates}/bootstrap.json "${_mongo_uri}"
-		result=$?
-
-		# Shut down reflex, if bootstrapping failed exit.
-		if [ $result -ne 0 ]; then
-			bb-log-info "Bootstrapping users failed. Cleaning up..."
-			StopReflex
-			exit $result;
-		fi
-
-		bb-log-info "Loading example dataset..."
-
-		# Load data
-		# TODO: change to uri
-		./bootstrap.py sort -q mongodb://localhost:${_mongo_port}/scitran $temp ../../persistent/data
-		result=$?
-
-		rm -rf $temp
-
-		if [ $result -ne 0 ]; then
-			bb-log-info "Bootstrapping data failed. Cleaning up..."
-			StopReflex
-			exit $result;
-		else
-			bb-log-info "Finishing bootstrap..."
-			StopReflex
-		fi
+		bb-log-info "Finishing bootstrap..."
+		StopReflex
 	)
 )}
 

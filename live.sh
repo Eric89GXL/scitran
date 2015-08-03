@@ -17,17 +17,26 @@
 	source scripts/2-run.sh
 	source scripts/3-targets.sh
 
-	# Run default or specific target
+	function Usage() {
+		echo "Usage: $0 {setup|run|venv|api|template|ci|release|update|secret|reset-db}" 1>&2;
+		exit 1
+	}
+
+	# Choose target
 	if [ -z "$1" ] ; then
-		Launch
+		Usage
 	else
 		case "$1" in
 
 			# Prepare everything for launch, but don't run
 			setup)
-				Setup
-				Install
-				Configure ;;
+				SetupTarget ;;
+
+			configure)
+				ConfigureTarget ;;
+
+			run)
+				RunTarget ;;
 
 			# Run a command in the venv
 			venv)
@@ -54,7 +63,7 @@
 
 			# Run everything desired for CI
 			ci)
-				CI ;;
+				CiTarget ;;
 
 			# Create release tarball
 			release)
@@ -75,10 +84,7 @@
 
 			# Print usage
 			*)
-				echo "Usage: $0 {setup|venv|api|template|ci|release|update|secret|reset-db}" 1>&2;
-				echo "Run without args to launch!" 1>&2;
-				exit 1
-			;;
+				Usage ;;
 		esac
 
 	fi
