@@ -68,7 +68,7 @@
 				PrintSecret ;;
 
 			reset-db)
-				rm -rf persistent/mongo
+				rm -rf persistent/mongo/*
 				Setup
 				Install
 				Configure ;;

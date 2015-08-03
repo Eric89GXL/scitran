@@ -9,15 +9,16 @@
 mongoDir="/scitran/persistent/mongo"
 mongoVDir="/scitran-mongo"
 
-mkdir -p `dirname $mongoDir`
+#If directory is either not present or not a symlink
+if [ ! -L $mongoDir ]; then
 
-# This will intentionally fail if mongo is dir is non-empty.
-# If you already have mongo data from running on the host, copy it in manually.
-rm -f $mongoDir 2>1 > /dev/null || rmdir $mongoDir
+  #Blow away what's there
+  rm -rf $mongoDir 2>1 > /dev/null || rmdir $mongoDir
 
-# Place mongo data inside the vagrant (outside the mount)
-mkdir -p $mongoVDir
-ln -s $mongoVDir $mongoDir
+  # Place mongo data inside the vagrant (outside the mount)
+  mkdir -p $mongoVDir
+  ln -s $mongoVDir $mongoDir
+fi
 
 # Bootstrap
 /scitran/live.sh setup
