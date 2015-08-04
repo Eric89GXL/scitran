@@ -134,8 +134,8 @@ function EnsureCode() {(
 	}
 
 	EnsureClone code/api      master   https://github.com/scitran/api.git
-	EnsureClone code/data     master   https://github.com/scitran/data.git
 	EnsureClone code/apps     master   https://github.com/scitran/apps.git
+	EnsureClone code/data     master   https://github.com/scitran/data.git
 	EnsureClone code/www      master   https://github.com/scitran/sdm.git
 
 	# EnsureClone code/engine   stopgapp https://github.com/scitran/engine.git
