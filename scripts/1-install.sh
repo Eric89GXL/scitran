@@ -130,7 +130,7 @@ function EnsureTemplates() {(
 function EnsureCode() {(
 	# Folder, ref, URI
 	function EnsureClone() {
-		test -d $1 || git clone -b $2 $3 $1
+		(test -d $1 || test -L $1) || git clone -b $2 $3 $1
 	}
 
 	EnsureClone code/api      master   https://github.com/scitran/api.git
