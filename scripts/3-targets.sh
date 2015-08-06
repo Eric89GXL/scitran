@@ -146,6 +146,10 @@ function CiTarget() {
 	# No-prompt varient of configure target
 	EnsureTestData
 	EnsureBootstrapData
+
+	# Sanity check some targets
+	./live.sh cmd pip freeze
+	./live.sh api ./bootstrap.py -h
 }
 
 function Release() {

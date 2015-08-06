@@ -38,24 +38,47 @@
 			run)
 				RunTarget ;;
 
-			# Run a command in the venv
-			venv)
+			# Run a command in the venv with config variables loaded
+			# Examples:
+			#	./live.sh cmd pip freeze
+			#	./live.sh cmd 'echo ${_mongo_uri}'
+			cmd)
 				shift
+
+				# Workaround for bash special variables being irate
+				cmd="$@"
+
+				# Load  config in subshell
 				LoadVenv
-				"$@" ;;
+				bash -c 'eval `scripts/load-env.py config.toml`; '"$cmd";;
 
 			# Run an API python file, from its folder
+			# Example:
+			#	./live.sh api ./bootstrap.py
 			api)
 				shift
-				LoadVenv
+				cmd="$@"
 
-				# This ain't uwsgi; chdir manually in this subshell
-				cd code/api
+				# Run command from correct directory and with workaround for API import problems
+				cmd="cd code/api; export PYTHONPATH=../data; $cmd"
 
-				# Hackaround for API import problems
-				export PYTHONPATH=../data
+				./live.sh cmd $cmd;;
 
-				"$@" ;;
+			# Make an API call with shared-secret authentication
+			# Example:
+			# 	./live.sh http api/jobs/count
+			# 	./live.sh http POST api/users _id=test@example.com firstname=Example lastname=User
+			http)
+				shift
+				cmd="$@"
+
+				# Handle host, port, and URL prefix
+				cmd=`echo $cmd | sed 's%api%https://${_site_domain}:${_ports_web}/api%'`
+
+				# Add headers to auth with shared secret
+				cmd='http --verify=no '$cmd' "User-Agent:SciTran Drone Script" "X-SciTran-Auth:${_auth_shared_secret}"'
+
+				./live.sh cmd $cmd;;
 
 			# Only regenerate templates
 			template)
