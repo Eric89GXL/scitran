@@ -57,7 +57,7 @@ function BootStrapUsers() {(
 	set +e
 
 	# Load user(s)
-	./bootstrap.py dbinit -j $1 "${_mongo_uri}"
+	./bootstrap.py dbinit -j $1 "mongodb://${_mongo_uri}"
 	result=$?
 
 	# Shut down reflex, if bootstrapping failed exit.

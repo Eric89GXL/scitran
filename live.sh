@@ -65,7 +65,7 @@
 				./live.sh cmd $cmd;;
 
 			# Make an API call with shared-secret authentication
-			# Example:
+			# Examples:
 			# 	./live.sh http api/jobs/count
 			# 	./live.sh http POST api/users _id=test@example.com firstname=Example lastname=User
 			http)
@@ -79,6 +79,22 @@
 				cmd='http --verify=no '$cmd' "User-Agent:SciTran Drone Script" "X-SciTran-Auth:${_auth_shared_secret}"'
 
 				./live.sh cmd $cmd;;
+
+			# Connect to the mongo shell, or just run a mongo command.
+			# Examples:
+			# ./live.sh mongo
+			# ./live.sh mongo show dbs
+			# ./live.sh mongo 'db.users.count()'
+			mongo)
+				shift
+
+				if [ "$#" -eq 0 ]; then
+					./live.sh cmd mongo '${_mongo_uri}'
+				else
+					# Send command via stdin; suppress CLI spam.
+					./live.sh cmd 'echo "'$@'" | mongo --quiet ${_mongo_uri}'
+				fi
+				;;
 
 			# Only regenerate templates
 			template)
