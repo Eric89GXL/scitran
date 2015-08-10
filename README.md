@@ -123,6 +123,13 @@ Usually, updating can be easily achieved by adding a new config key.
 
 Check which version you're at, and read each neccesary section:
 
+#### To 1.4
+
+This version modifies the `mongo.uri` key - specifically, removing the "mongodb://" prefix.<br>
+The official mongo CLI does not like that prefix, so it's more convenient to be without it.
+
+The default was `mongodb://localhost:9001/scitran` before; now it is simply `localhost:9001/scitran`.
+
 #### To 1.3
 
 This version removes the `mongo.location` and `data.location` keys.
