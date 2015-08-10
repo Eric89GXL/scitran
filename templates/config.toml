@@ -2,7 +2,7 @@
 [flywheel]
 	# Used to identify config file versions and prevent flywheel from running without important keys.
 	# This is only changed when breaking changes are made and does not reflect product version.
-	version = 1.3
+	version = 1.4
 
 [site]
 	# Human friendly site name!
@@ -84,7 +84,7 @@
 
 	# Where the server can connect to mongo.
 	# Only change when running on more than one machine.
-	uri = "mongodb://localhost:9001/scitran"
+	uri = "localhost:9001/scitran"
 
 [nginx]
 
