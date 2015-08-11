@@ -1,3 +1,5 @@
+**Currently out of date. Needs updating!**
+
 # Releasing
 
 A new release.tar can be created using `scitran/scripts/make-release.sh`. `make-release.sh` will generate
