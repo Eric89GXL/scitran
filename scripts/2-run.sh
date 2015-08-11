@@ -14,18 +14,32 @@ function Reflex() {(
 	export PYTHONPATH=../data
 
 
+	# Run when shutting down
 	control_c() {
-		echo -en "\n*** Ouch! Exiting ***\n"
-		exit $?
+		# Complete unconditionally; wait will sometimes return 141
+		set +e
+
+		# Jump past emulator-visible "^C" text
+		echo
+		bb-log-info "Shutting down..."
+
+		# Send SIGTERM to process manager; wait for clean shutdown
+		kill $reflexPID
+		wait $reflexPID
+
+		bb-log-info "Stopped."
+		exit 0
 	}
 
 	# trap keyboard interrupt (control-c)
 	trap control_c SIGINT
 
-	# Supress reflex output decoration and uwsgi's launch message
-	$reflexLoc --decoration=plain --config=${_folder_generated}/reflex.config.sh \
-		| sed -e 's/^\[00\]/Python:  /g; s/^\[01\]/Mongo:   /g; s/^\[02\]/Nginx:   /g; /\[uWSGI\] getting INI configuration from/d; s/Starting service$/Running/; s/Killing service$/Stopping/; '
-
+	# Run reflex.
+	#
+	# Sed filter goes in a subshell to change the launch order of the two commands.
+	# This allows reflex to launch last, and get reflex's PID on the next line with $!.
+	# Capturing the PID allows us to guarantee cleanup in the control_c function.
+	#
 	# Sed statement does the following, in order:
 	# 	Labels reflex's [00] prefix as Python
 	# 	Labels reflex's [01] prefix as Mongo
@@ -33,6 +47,12 @@ function Reflex() {(
 	# 	Removes useless message from python about loading config
 	# 	Renames 'Starting service'
 	# 	Renames 'Killing service'
+	$reflexLoc --decoration=plain --config=${_folder_generated}/reflex.config.sh > >(sed -e 's/^\[00\]/Python:  /g; s/^\[01\]/Mongo:   /g; s/^\[02\]/Nginx:   /g; /\[uWSGI\] getting INI configuration from/d; s/Starting service$/Running/; s/Killing service$/Restarting.../; ') &
+
+
+	# Block here until Ctrl-C
+	reflexPID=$!
+	wait $reflexPID
 )}
 
 # This duration needs to be long enough to run and cleanly shut down all infra.

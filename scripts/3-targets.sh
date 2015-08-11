@@ -123,13 +123,8 @@ function RunTarget() {
 	Install
 
 	# Run
-	# Hackaround: control-C doesn't show reflex cleanup ops.
-	# Should instead use a sigtrap, kill -INT, pid-wait.
 	bb-log-info "Launching"
 	Reflex
-
-	# Wait for exit
-	bb-log-info "Stopped."
 }
 
 # Print the shared secret
