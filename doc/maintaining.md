@@ -16,7 +16,7 @@ Currently, we've got some hacks to be aware of.
 ./live.sh venv pip-dump
 
 # Don't clobber hack file
-git checkout requirements-manual.tx
+git checkout requirements-manual.txt
 ```
 
 Then review `requirements.txt`. In particular, it will remove packages like `wsgiref` and `argparse` that are needed by the API but are not found by the tool.
