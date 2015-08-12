@@ -47,13 +47,6 @@ Check out your new local instance at [https://localhost:8443](https://localhost:
 
 This script will start everything it needs (nginx, mongo, uwsgi) and run them until you quit (Control-C).
 
-### Managing processes
-
-Right now, uwsgi is sometimes poorly behaved, and remains running after quitting the script.
-
-You can remediate this manually with `killall -9 uwsgi`.<br>
-We will correct this problem soon.
-
 ## Configuring
 
 The first setup will create a config.toml file for you from this [template](templates/config.toml).<br>
