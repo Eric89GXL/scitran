@@ -8,8 +8,11 @@
 # Some service actually just launch and never re-launch.
 # Uses reflex as an utterly simple daemon manager for development simplicity.
 
+# Add this flag to all 'real' commands to avoid lots of wasted watching:
+# --inverse-regex="persistent/.*"
+
 # Python server
---start-service --regex='.*\.py$' --inverse-regex="persistent/.*" -- uwsgi {{folder.generated}}/uwsgi.config.ini
+--start-service --regex='.*\.(py|wsgi)$' --inverse-regex="persistent/.*" -- uwsgi {{folder.generated}}/uwsgi.config.ini
 
 # Mongo server
 --start-service --glob="does-not-exist" --inverse-regex=".*" -- mongod --config {{folder.generated}}/mongo.config.yaml
