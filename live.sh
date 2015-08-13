@@ -96,6 +96,12 @@
 				fi
 				;;
 
+			# Follows the python logs.
+			# Formats stack traces by removing long paths and highlighting scitran files.
+			tail-python)
+				tail -f -n 30 persistent/logs/uwsgi.log | sed --unbuffered 's$'`pwd`'$$g; s$/persistent/venv/local/lib/python2.7/site-packages/$$g;' | egrep --color '\"\..*\.py\"|api.wsgi|'
+				;;
+
 			# Only regenerate templates
 			template)
 				EnsureConfig ;;
