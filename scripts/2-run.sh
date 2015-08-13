@@ -47,7 +47,7 @@ function Reflex() {(
 	# 	Removes useless message from python about loading config
 	# 	Renames 'Starting service'
 	# 	Renames 'Killing service'
-	$reflexLoc --decoration=plain --config=${_folder_generated}/reflex.config.sh > >(sed -e 's/^\[00\]/Python:  /g; s/^\[01\]/Mongo:   /g; s/^\[02\]/Nginx:   /g; /\[uWSGI\] getting INI configuration from/d; s/Starting service$/Running/; s/Killing service$/Restarting.../; ') &
+	$reflexLoc --decoration=plain --config=${_folder_generated}/reflex.config.sh > >(sed 's/^\[00\]/Python:  /g; s/^\[01\]/Mongo:   /g; s/^\[02\]/Nginx:   /g; /\[uWSGI\] getting INI configuration from/d; s/Starting service$/Running/; s/Killing service$/Restarting.../; ') &
 
 
 	# Block here until Ctrl-C
