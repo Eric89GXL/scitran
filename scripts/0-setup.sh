@@ -71,11 +71,6 @@ function LoadVenv() {
 }
 
 function EnsurePipPackages() {(
-
-	# Pip install takes time to run, let's circumvent if up to date
-	reqHash=`cat requirements.txt requirements-manual.txt | sha1sum requirements.txt | cut -c -7`
-	flagName="pip-pkgs-$reqHash"
-
 	# Ensure venv, and clear pkgs flag if no venv
 	test -d persistent/venv || (
 		bb-flag-unset $flagName
@@ -84,30 +79,13 @@ function EnsurePipPackages() {(
 		bb-log-info "Created python virtual environment"
 	)
 
-	set +e
-	bb-flag? $flagName && return
-	set -e
-
 	# Install packages
 	#
 	# NOTE: DO NOT USE UNMODIFIED `pip freeze` TO GENERATE THIS FILE.
 	# Pip will happily save instructions it has no idea how to proccess.
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
-	pip install -r requirements.txt | grep -v "Requirement already satisfied"
-
-	# Install manual packages.
-	#
-	#  Hackaround for pip's inability to install from its own r.txt file.
-	#  Can later be moved into r.txt with correct flags + egg names.
-	while read line; do
-		echo "Installing $line"
-		pip install $line
-	done <requirements-manual.txt
-
-	# Remember this set of packages
-	bb-log-info "Pip packages installed"
-	bb-flag-set $flagName
+	pip install -r requirements.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
 )}
 
 # For loading all project configuration into bash variables.
