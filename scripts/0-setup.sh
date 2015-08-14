@@ -122,6 +122,12 @@ function LoadConfig() {
 function EnsureConfig() {
 
 	test -f config.toml || (
+
+		# Hackaround: travis started not having this package.
+		# If source infra lands, this can go away in favor of travis apt config
+		# Package requirement should be doc'd also.
+		which uuidgen || sudo apt-get install -y uuid-runtime
+
 		# Generate a shared secret
 		secret=`uuidgen --random /dev/random | sed 's/-//g'`
 
