@@ -18,7 +18,7 @@
 	source scripts/3-targets.sh
 
 	function Usage() {
-		echo "Usage: $0 {setup|run|venv|api|template|ci|release|update|secret|reset-db}" 1>&2;
+		echo "Usage: $0 {setup|configure|run|cmd|api|http|mongo|tail-python|template|ci|release|update|secret|reset-db}" 1>&2;
 		exit 1
 	}
 
