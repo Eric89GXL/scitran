@@ -86,6 +86,7 @@ function EnsurePipPackages() {(
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
 	pip install -r requirements.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
+	pip install -r requirements_1.txt
 )}
 
 # For loading all project configuration into bash variables.
