@@ -39,8 +39,9 @@ function EnsurePip() {(
 	tempF="$( bb-tmp-file )"
 	curl https://bootstrap.pypa.io/get-pip.py > $tempF
 
-	# We need these for numpy, may as well place here.
-	sudo apt-get install -y build-essential python-dev
+	# We need these for numpy and scipy, may as well place here.
+	sudo apt-get install -y build-essential python-dev libatlas-dev \
+		libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev ccache
 
 	# Install then upgrade pip
 	sudo python $tempF
