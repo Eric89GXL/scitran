@@ -5,7 +5,7 @@
 # This file is auto-generated.
 # Be sure you are editing the copy in templates/.
 
-# Some service actually just launch and never re-launch.
+# Some services actually just launch and never re-launch.
 # Uses reflex as an utterly simple daemon manager for development simplicity.
 
 # Add this flag to all 'real' commands to avoid lots of wasted watching:
