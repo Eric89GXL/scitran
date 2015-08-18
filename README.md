@@ -108,6 +108,16 @@ Move `persistent/mongo` elsewhere before switching to vagrant.
 In general, it is not wise to mix host and vagrant usage of a single instance.<br>
 Separate scitran folders are recommended!
 
+### Note about live-reload
+
+Some text editors will open up file watches on any folders you have open.<br>
+Combined with reflex, which scitran uses to live-reload the server, and you may run out of watchers.
+
+If you get a lot of "Error while watching new path ...: no space left on device" messages, try this:
+
+```bash
+echo 524288 | sudo tee -a /proc/sys/fs/inotify/max_user_watches
+```
 
 ## Migrating
 
