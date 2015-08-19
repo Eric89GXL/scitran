@@ -2,7 +2,7 @@
 [flywheel]
 	# Used to identify config file versions and prevent flywheel from running without important keys.
 	# This is only changed when breaking changes are made and does not reflect product version.
-	version = 1.4
+	version = 1.5
 
 [site]
 	# Human friendly site name!
@@ -13,10 +13,6 @@
 
 	# Used for identification to central.
 	id = "local"
-
-	# Demo mode allows any oAuth-approved user to become a user.
-	# Otherwise, each user must be manually whitelisted by an administrator beforehand.
-	demo = false
 
 	# Insecure mode allows manual override by setting ?user=USER in api calls.
 	# For debugging purposes only.

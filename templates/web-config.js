@@ -4,7 +4,6 @@
 //
 config = {
 	site: {
-		demo: {{site.demo}},
 		insecure: {{site.insecure}},
 	},
 	browser: {
