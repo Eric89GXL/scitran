@@ -92,7 +92,7 @@ function EnsurePipPackages() {(
 		pip install --no-index -f http://travis-wheels.scikit-image.org numpy==1.9.2 scipy==0.14
 	fi;
 	pip install -r requirements.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
-	pip install -r requirements_1.txt
+	pip install -r requirements_1.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
 )}
 
 # For loading all project configuration into bash variables.
