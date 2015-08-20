@@ -39,8 +39,9 @@ function EnsurePip() {(
 	tempF="$( bb-tmp-file )"
 	curl https://bootstrap.pypa.io/get-pip.py > $tempF
 
-	# We need these for numpy, may as well place here.
-	sudo apt-get install -y build-essential python-dev
+	# We need these for numpy and scipy, may as well place here.
+	sudo apt-get install -y build-essential python-dev libatlas-dev \
+		libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev ccache
 
 	# Install then upgrade pip
 	sudo python $tempF
@@ -85,7 +86,13 @@ function EnsurePipPackages() {(
 	# Pip will happily save instructions it has no idea how to proccess.
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
+
+	# Travis can't handle building `scipy` from source, so let's speed it up here
+	if [ "${TRAVIS}" == "true" ]; then
+		pip install --no-index -f http://travis-wheels.scikit-image.org numpy==1.9.2 scipy==0.14
+	fi;
 	pip install -r requirements.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
+	pip install -r requirements_1.txt
 )}
 
 # For loading all project configuration into bash variables.
