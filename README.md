@@ -126,6 +126,10 @@ Usually, updating can be easily achieved by adding a new config key.
 
 Check which version you're at, and read each neccesary section:
 
+#### To 1.5
+
+This version removes the `site.demo` key. Demo mode is no longer supported.
+
 #### To 1.4
 
 This version modifies the `mongo.uri` key - specifically, removing the "mongodb://" prefix.<br>
