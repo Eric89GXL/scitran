@@ -88,10 +88,7 @@ function EnsurePipPackages() {(
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
 
-	# Travis can't handle building `scipy` from source, so let's speed it up here
-	if [ "${TRAVIS}" == "true" ]; then
-		pip install --no-index -f http://travis-wheels.scikit-image.org numpy==1.9.2 scipy==0.14
-	fi;
+	pip install --no-index -f https://lester.ilabs.uw.edu/files/wheels numpy==1.9.2 scipy==0.16
 	pip install -r requirements.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
 	pip install -r requirements_1.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
 )}
