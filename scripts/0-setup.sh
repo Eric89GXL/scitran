@@ -68,10 +68,11 @@ function EnsurePipPackages() {(
            exit 1;
 	fi;
 
-	pip install --upgrade pip wheel setuptools requests[security]
-	pip install --no-index -f $url -r requirements_0_build_install.txt
-	pip install --no-index -f $url -r requirements_1_build_install.txt
-	pip install --no-index -f $url -r requirements_2_install.txt
+	pip install --upgrade pip wheel setuptools
+	pip install --no-index -f $url -r requirements/00_build_install.txt
+	pip install --no-index -f $url -r requirements/01_build_install.txt
+	pip install --no-index -f $url -r requirements/02_build_install.txt
+	pip install --no-index -f $url -r requirements/03_install.txt
 )}
 
 # For loading all project configuration into bash variables.

@@ -13,12 +13,14 @@ fi
 source venv/bin/activate
 pip wheel --no-cache-dir -f wheelhouse cython==0.23
 pip install --upgrade --no-index -f wheelhouse cython==0.23
-pip wheel --no-cache-dir -f wheelhouse -r ../requirements_0_build_install.txt
-pip install --upgrade --no-index -f wheelhouse -r ../requirements_0_build_install.txt
-pip wheel --no-cache-dir -f wheelhouse -r ../requirements_1_build_install.txt
-pip install --upgrade --no-index -f wheelhouse -r ../requirements_1_build_install.txt
-pip wheel --no-cache-dir -f wheelhouse -r ../requirements_2_build.txt
-pip install --upgrade --no-index -f wheelhouse -r ../requirements_2_install.txt
+pip wheel --no-cache-dir -f wheelhouse -r ../requirements/00_build_install.txt
+pip install --upgrade --no-index -f wheelhouse -r ../requirements/00_build_install.txt
+pip wheel --no-cache-dir -f wheelhouse -r ../requirements/01_build_install.txt
+pip install --upgrade --no-index -f wheelhouse -r ../requirements/01_build_install.txt
+pip wheel --no-cache-dir -f wheelhouse -r ../requirements/02_build_install.txt
+pip install --upgrade --no-index -f wheelhouse -r ../requirements/02_build_install.txt
+pip wheel --no-cache-dir -f wheelhouse -r ../requirements/03_build.txt
+pip install --upgrade --no-index -f wheelhouse -r ../requirements/03_install.txt
 
 # we need separate "_build" and "_install" text files for some deps
 # because they are built from git source
