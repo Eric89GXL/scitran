@@ -147,6 +147,10 @@ function CiTarget() {
 	./live.sh cmd pip freeze
 	./live.sh api ./bin/bootstrap.py -h
 	./live.sh lint
+	# Ensure our wheels work okay by importing a package that imports both
+	# numpy and scipy
+	LoadVenv
+	python -c "import mne; print(mne)"
 }
 
 function PyLint() {
