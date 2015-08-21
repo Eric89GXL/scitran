@@ -828,10 +828,12 @@ bb-apt-package?() {
     dpkg -s "$PACKAGE" 2> /dev/null | grep -q '^Status:.\+installed'
 }
 
+# MOD: added 'sudo' to allow running as non-root without escalating.
+
 bb-apt-update() {
     $BB_APT_UPDATED && return 0
     bb-log-info 'Updating apt cache'
-    apt-get update
+    sudo apt-get update
     BB_APT_UPDATED=true
 }
 
@@ -842,12 +844,14 @@ bb-apt-install() {
         then
             bb-apt-update
             bb-log-info "Installing package '$PACKAGE'"
-            apt-get install -y "$PACKAGE"
+            sudo apt-get install -y "$PACKAGE"
             bb-exit-on-error "Failed to install package '$PACKAGE'"
             bb-event-fire "bb-package-installed" "$PACKAGE"
         fi
     done
 }
+
+# END MOD.
 
 ##
 # ./source/50_brew.sh
