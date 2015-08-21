@@ -78,7 +78,8 @@ function EnsureNginx() {(
 	# A zero-byte error log is generated there, completely ignoring configuration.
 	# It looks like nginx is hard coded to assume it's launched with root.
 	sudo mkdir -p /var/log/nginx/
-	sudo chmod 777 /var/log/nginx/
+	sudo touch /var/log/nginx/error.log
+	sudo chmod -R 777 /var/log/nginx/
 
 	# Stop nginx service if it was not previously installed
 	if [ -z $previouslyInstalled ] ; then
