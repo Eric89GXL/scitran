@@ -1,6 +1,6 @@
 #!/bin/bash -ef
 
-sudo apt-get install -y build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev python-pip python-virtualenv
+sudo apt-get install -y build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev python-pip python-virtualenv libffi-dev
 
 if [ ! -d "venv" ]; then
 	virtualenv venv

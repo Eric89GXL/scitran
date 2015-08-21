@@ -68,7 +68,7 @@ function EnsurePipPackages() {(
            exit 1;
 	fi;
 
-	pip install --upgrade pip wheel setuptools
+	pip install --upgrade pip wheel setuptools requests[security]
 	pip install --no-index -f $url -r requirements_0_build_install.txt
 	pip install --no-index -f $url -r requirements_1_build_install.txt
 	pip install --no-index -f $url -r requirements_2_install.txt
