@@ -68,7 +68,7 @@ function EnsurePipPackages() {(
            exit 1;
 	fi;
 
-	echo "Checking Python packages..."
+	echo "Checking Python packages"
 	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
 	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
 	pip install --no-index -f $url -r requirements/00_build_install.txt | (grep -Ev "$ignore" || true)
