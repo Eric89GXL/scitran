@@ -29,28 +29,8 @@ function DetectPlatform() {
 
 function EnsurePackages() {
 	# Idempotently install apt packages
-	bb-apt-install build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev ccache
+	bb-apt-install libatlas3-base liblapack3 libgmp10 libmpfr4 ccache python-pip
 }
-
-function EnsurePip() {(
-	set +e
-	bb-flag? pip && return
-	set -e
-
-	# Ensure .pyc files are generated
-	unset PYTHONDONTWRITEBYTECODE
-
-	# Download pip bootstrapper
-	tempF="$( bb-tmp-file )"
-	curl https://bootstrap.pypa.io/get-pip.py > $tempF
-
-	# Install then upgrade pip
-	sudo python $tempF
-	sudo pip install --upgrade pip
-
-	bb-log-info "Pip installed"
-	bb-flag-set pip
-)}
 
 function EnsureVirtualEnv() {(
 	set +e

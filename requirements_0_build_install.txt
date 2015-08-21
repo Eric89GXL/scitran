@@ -5,7 +5,6 @@ argparse==1.2.1
 functools32==3.2.3-1
 jsonschema==2.5.1
 lockfile==0.10.2
-mne==0.9
 numpy==1.9.2
 pip-tools==0.3.6
 pylint==1.4.4
@@ -14,7 +13,6 @@ pystache==0.5.4
 python-dateutil==2.4.2
 pytz==2015.4
 requests==2.7.0
-scipy==0.16
 six==1.9.0
 toml==0.9.1
 uWSGI==2.0.11
@@ -22,6 +20,3 @@ webapp2==2.5.2
 wsgiref==0.1.2
 httpie==0.9.2
 Pygments==2.0.2
-https://github.com/scitran/pydicom/archive/db10c975c214c7a8333f5dc05c4fa4141fae32da.tar.gz#egg=pydicom
-https://github.com/nipy/nibabel/archive/e471f8ca664c9104847b0ffd930e9a6f3ea05e1d.tar.gz#egg=nibabel
-https://github.com/moloney/dcmstack/archive/6d49fe01235c08ae63c76fa2f3943b49c9b9832d.tar.gz#egg=dcmstack
