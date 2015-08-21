@@ -3,18 +3,20 @@
 # Helper script to build wheels for a given Ubuntu x86_64 version (e.g.,
 # 12.04 or 15.04)
 
+# these are required to build the packages
 sudo apt-get install -y build-essential python-dev libatlas-dev \
 	libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev \
 	python-pip python-virtualenv libffi-dev
 
+# set up the virtualenv in which to build and install libs
 if [ ! -d "venv" ]; then
 	virtualenv venv
 	source venv/bin/activate
 	pip install --upgrade pip wheel setuptools
 fi
 
-# this will create a "wheelhouse" directory in the current dir with
-# all the requirements
+# these pip commands will create a "wheelhouse" directory in the current dir with
+# all the requirements fulfilled
 source venv/bin/activate
 pip wheel --no-cache-dir -f wheelhouse cython==0.23
 pip install --upgrade --no-index -f wheelhouse cython==0.23
