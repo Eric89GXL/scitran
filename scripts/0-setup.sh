@@ -29,20 +29,8 @@ function DetectPlatform() {
 
 function EnsurePackages() {
 	# Idempotently install apt packages
-	bb-apt-install libatlas3-base liblapack3 libgmp10 libmpfr4 ccache python-pip
+	bb-apt-install libatlas3gf-base liblapack3gf libgmp10 libmpfr4 python-pip python-virtualenv
 }
-
-function EnsureVirtualEnv() {(
-	set +e
-	bb-flag? venv && return
-	set -e
-
-	sudo apt-get install -y python-virtualenv
-
-	bb-log-info "Virtualenv installed"
-	bb-flag-set venv
-)}
-
 
 function LoadVenv() {
 	# Ensure .pyc files are generated
@@ -68,7 +56,22 @@ function EnsurePipPackages() {(
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
 
-	pip install --no-index -f https://lester.ilabs.uw.edu/files/wheelhouse -r requirements.txt
+	arch=`uname -m | sed 's/x86_//;s/i[3-6]86/32/'`
+	if [ "$arch" != "64" ]; then
+		echo "Only 64-bit architecture supported"
+           exit 1;
+	fi;
+	release=`lsb_release -sr`
+	url="https://lester.ilabs.uw.edu/files/wheelhouse/$release"
+	if [ `curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].."` != "1" ]; then
+		echo "No pip packages found for distribution $release"
+           exit 1;
+	fi;
+
+	pip install --upgrade pip wheel setuptools
+	pip install --no-index -f $url -r requirements_0_build_install.txt
+	pip install --no-index -f $url -r requirements_1_build_install.txt
+	pip install --no-index -f $url -r requirements_2_install.txt
 )}
 
 # For loading all project configuration into bash variables.
