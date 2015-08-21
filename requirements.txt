@@ -5,6 +5,7 @@ argparse==1.2.1
 functools32==3.2.3-1
 jsonschema==2.5.1
 lockfile==0.10.2
+mne==0.9
 numpy==1.9.2
 pip-tools==0.3.6
 pylint==1.4.4
@@ -13,6 +14,7 @@ pystache==0.5.4
 python-dateutil==2.4.2
 pytz==2015.4
 requests==2.7.0
+scipy==0.16
 six==1.9.0
 toml==0.9.1
 uWSGI==2.0.11
