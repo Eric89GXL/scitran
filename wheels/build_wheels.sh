@@ -1,7 +1,6 @@
 #!/bin/bash -ef
 
-# Must have the following installed via synaptic:
-# $ sudo apt-get install build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev python-pip python-virtualenv
+sudo apt-get install -y build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev python-pip python-virtualenv
 
 if [ ! -d "venv" ]; then
 	virtualenv venv
