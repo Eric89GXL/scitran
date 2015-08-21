@@ -68,11 +68,13 @@ function EnsurePipPackages() {(
            exit 1;
 	fi;
 
-	pip install -q --upgrade pip wheel setuptools
-	pip install -q --no-index -f $url -r requirements/00_build_install.txt
-	pip install -q --no-index -f $url -r requirements/01_build_install.txt
-	pip install -q --no-index -f $url -r requirements/02_build_install.txt
-	pip install -q --no-index -f $url -r requirements/03_install.txt
+	echo "Checking Python packages..."
+	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
+	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
+	pip install --no-index -f $url -r requirements/00_build_install.txt | (grep -Ev "$ignore" || true)
+	pip install --no-index -f $url -r requirements/01_build_install.txt | (grep -Ev "$ignore" || true)
+	pip install --no-index -f $url -r requirements/02_build_install.txt | (grep -Ev "$ignore" || true)
+	pip install --no-index -f $url -r requirements/03_install.txt | (grep -Ev "$ignore" || true)
 )}
 
 # For loading all project configuration into bash variables.
