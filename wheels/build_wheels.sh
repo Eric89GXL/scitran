@@ -1,6 +1,11 @@
 #!/bin/bash -ef
 
-sudo apt-get install -y build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev python-pip python-virtualenv libffi-dev
+# Helper script to build wheels for a given Ubuntu x86_64 version (e.g.,
+# 12.04 or 15.04)
+
+sudo apt-get install -y build-essential python-dev libatlas-dev \
+	libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev \
+	python-pip python-virtualenv libffi-dev
 
 if [ ! -d "venv" ]; then
 	virtualenv venv
