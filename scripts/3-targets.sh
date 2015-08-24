@@ -9,8 +9,6 @@ function Setup() {
 	DetectPlatform
 
 	EnsurePackages
-	EnsurePip
-	EnsureVirtualEnv
 	EnsurePipPackages
 	EnsureConfig
 
