@@ -49,7 +49,7 @@ Vagrant.configure(2) do |config|
 			"--cpus",   "4",
 
 			# RAM allocation
-			"--memory", "1024"
+			"--memory", "2048"
 		]
 	end
 
