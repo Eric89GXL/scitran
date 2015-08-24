@@ -29,7 +29,7 @@ function DetectPlatform() {
 
 function EnsurePackages() {
 	# Idempotently install apt packages
-	bb-apt-install libatlas3gf-base liblapack3gf libgmp10 libmpfr4 python-pip python-virtualenv
+	bb-apt-install libatlas3gf-base liblapack3gf libgmp10 libmpfr4 python-pip python-virtualenv uuid-runtime ca-certificates
 }
 
 function LoadVenv() {
@@ -89,11 +89,6 @@ function LoadConfig() {
 function EnsureConfig() {
 
 	test -f config.toml || (
-
-		# Hackaround: travis started not having this package.
-		# If source infra lands, this can go away in favor of travis apt config
-		# Package requirement should be doc'd also.
-		which uuidgen || sudo apt-get install -y uuid-runtime
 
 		# Generate a shared secret
 		secret=`uuidgen --random /dev/random | sed 's/-//g'`

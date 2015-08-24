@@ -71,7 +71,6 @@ function EnsureNginx() {(
 	sudo add-apt-repository -y ppa:nginx/stable
 	bb-log-info "Updating apt..."
 	sudo apt-get update -qq
-	sudo apt-get install -y ca-certificates
 	sudo apt-get install -y nginx
 
 	# Hackaround for nginx config not listening to my demand that it not use /var/log/nginx.
