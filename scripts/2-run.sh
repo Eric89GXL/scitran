@@ -95,7 +95,8 @@ function BootStrapUsers() {(
 	set +e
 
 	# Load user(s)
-	./bootstrap.py dbinit -j $1 "mongodb://${_mongo_uri}"
+	export PYTHONPATH=.:../data
+	./bin/bootstrap.py dbinit -j $1 "mongodb://${_mongo_uri}"
 	result=$?
 
 	# Shut down reflex, if bootstrapping failed exit.
@@ -122,7 +123,8 @@ function BootStrapData() {(
 
 	# Load data
 	# TODO: change to uri
-	./bootstrap.py sort -q mongodb://localhost:${_mongo_port}/scitran $temp ../../persistent/data
+	export PYTHONPATH=.:../data
+	./bin/bootstrap.py sort -q mongodb://localhost:${_mongo_port}/scitran $temp ../../persistent/data
 	result=$?
 
 	rm -rf $temp

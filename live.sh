@@ -54,7 +54,7 @@
 
 			# Run an API python file, from its folder
 			# Example:
-			#	./live.sh api ./bootstrap.py
+			#	./live.sh api ./bin/bootstrap.py
 			api)
 				shift
 				cmd="$@"
