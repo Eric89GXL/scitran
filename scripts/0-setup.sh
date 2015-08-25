@@ -58,17 +58,17 @@ function EnsurePipPackages() {(
 
 	arch=`uname -m | sed 's/x86_//;s/i[3-6]86/32/'`
 	if [ "$arch" != "64" ]; then
-		echo "Only 64-bit architecture supported"
+		bb-log-error "Only 64-bit architecture supported"
            exit 1;
 	fi;
 	release=`lsb_release -sr`
 	url="https://lester.ilabs.uw.edu/files/wheelhouse/$release"
 	if [ `curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].."` != "1" ]; then
-		echo "No pip packages found for distribution $release"
+		bb-log-error "No pip packages found for distribution $release"
            exit 1;
 	fi;
 
-	echo "Checking Python packages"
+	bb-log-info "Checking Python packages"
 	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
 	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
 	pip install --no-index -f $url -r requirements/00_build_install.txt | (grep -Ev "$ignore" || true)
