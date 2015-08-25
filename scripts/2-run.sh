@@ -171,12 +171,16 @@ function PylintCritical() {(
 	# C0111: Missing docstring
 	# W    : All warnings
 	# F0401: Unable to import package - possible problem with pylint usage?
+	bb-log-info "Running Pylint in critical-only mode..."
 	pylint --disable=C,W0312 scripts/*.py
+	bb-log-info "Checks passed."
 )}
 
 function PylintAll() {(
 	LoadVenv
 
 	# This variant is intended to be run on developer checkin or as CI target.
+	bb-log-info "Running Pylint..."
 	pylint scripts/*.py
+	bb-log-info "Checks passed."
 )}
