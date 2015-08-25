@@ -146,6 +146,15 @@ function CiTarget() {
 	# Sanity check some targets
 	./live.sh cmd pip freeze
 	./live.sh api ./bootstrap.py -h
+	./live.sh lint
+}
+
+function PyLint() {
+	EnsurePackages
+	EnsurePip
+	EnsureVirtualEnv
+	EnsurePipPackages
+	PylintAll
 }
 
 function Release() {
