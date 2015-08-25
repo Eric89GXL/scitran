@@ -10,8 +10,10 @@ import re
 mapP = sys.argv[1]
 
 # Read user and static settings
-settings = toml.loads(open(mapP, 'r').read())
-static = toml.loads(open('scripts/mandantory.toml', 'r').read())
+with open(mapP, 'r') as fid:
+    settings = toml.loads(fid.read())
+with open('scripts/mandantory.toml', 'r') as fid:
+    static = toml.loads(fid.read())
 
 # Combine maps
 mapping = static.copy()
