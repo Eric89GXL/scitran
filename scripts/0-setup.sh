@@ -101,7 +101,7 @@ function EnsurePipPackages() {(
 function LoadConfig() {
 	# Not in a subshell for obvious reasons
 	LoadVenv
-	eval `scripts/load-env.py config.toml`
+	eval `scripts/load_env.py config.toml`
 }
 
 # Implies LoadConfig and LoadVenv
@@ -127,5 +127,5 @@ function EnsureConfig() {
 	LoadConfig
 
 	# Check config version
-	scripts/check-version.py config.toml
+	scripts/check_version.py config.toml
 }

@@ -50,7 +50,7 @@
 
 				# Load  config in subshell
 				LoadVenv
-				bash -c 'eval `scripts/load-env.py config.toml`; '"$cmd";;
+				bash -c 'eval `scripts/load_env.py config.toml`; '"$cmd";;
 
 			# Run an API python file, from its folder
 			# Example:
