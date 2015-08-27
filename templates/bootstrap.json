@@ -1,7 +1,7 @@
 {
 	"groups": [
 		{
-			"_id": "SciTran",
+			"_id": "scitran",
 			"name": "Scientific Transparency",
 			"roles": [
 				{
