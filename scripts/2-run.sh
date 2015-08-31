@@ -171,16 +171,16 @@ function PylintCritical() {(
 	# C0111: Missing docstring
 	# W    : All warnings
 	# F0401: Unable to import package - possible problem with pylint usage?
-	pylint -j 0 --reports n --disable=C0111,C,W0312,F0401 $@ 2> >(grep -v "No config file found, using default configuration")
+	bb-log-info "Running Pylint in critical-only mode..."
+	pylint --disable=C,W0312 scripts/*.py
+	bb-log-info "Checks passed."
 )}
 
 function PylintAll() {(
 	LoadVenv
 
 	# This variant is intended to be run on developer checkin or as CI target.
-	#
-	# Disables:
-	# C0111: Missing docstring
-	# F0401: Unable to import package - possible problem with pylint usage?
-	pylint -j 0 --reports n --disable=C0111,F0401 $@ 2> >(grep -v "No config file found, using default configuration")
+	bb-log-info "Running Pylint..."
+	pylint scripts/*.py
+	bb-log-info "Checks passed."
 )}
