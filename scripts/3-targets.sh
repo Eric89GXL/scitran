@@ -153,8 +153,6 @@ function CiTarget() {
 
 function PyLint() {
 	EnsurePackages
-	EnsurePip
-	EnsureVirtualEnv
 	EnsurePipPackages
 	PylintAll
 }

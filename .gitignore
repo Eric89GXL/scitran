@@ -17,6 +17,6 @@
 # Tools
 .idea
 
-# Wheels
+# Wheels and venv
 /wheels/wheelhouse
 /wheels/venv
