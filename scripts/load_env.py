@@ -22,7 +22,6 @@ mapping.update(settings)
 # Hackaround for any template that needs an absolute path
 mapping["absPath"] = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 def serialize(value, name):
     if value is None:
         print('{0}=""'.format(name))
