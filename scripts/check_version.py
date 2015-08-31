@@ -12,7 +12,6 @@ with open('templates/config.toml', 'r') as fid:
 # Check config secret
 if 'auth' in mapping and 'shared_secret' in mapping['auth']:
     if mapping['auth']['shared_secret'] == template['auth']['shared_secret']:
-
         sys.stderr.write('\nWarning: Your shared secret has not been changed from its default.\n'
                          'Your system will be insecure until you change auth.shared_secret in config.toml.\n')
 
