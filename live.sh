@@ -60,7 +60,7 @@
 				cmd="$@"
 
 				# Run command from correct directory and with workaround for API import problems
-				cmd="cd code/api; export PYTHONPATH=../data; $cmd"
+				cmd="cd code/api; export PYTHONPATH=.:../data; $cmd"
 
 				./live.sh cmd $cmd;;
 

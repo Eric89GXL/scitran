@@ -11,7 +11,7 @@ function Reflex() {(
 	LoadVenv
 
 	# Hackaround for API import problems
-	export PYTHONPATH=../data
+	export PYTHONPATH=.:../data
 
 
 	# Run when shutting down
@@ -65,7 +65,7 @@ function StartReflex() {
 	LoadVenv
 
 	# Hackaround for API import problems
-	export PYTHONPATH=../data
+	export PYTHONPATH=.:../data
 
 	# Supress reflex output decoration and uwsgi's launch message
 	# Launch reflex in the background. Omits the grep to get PID easily -.-
