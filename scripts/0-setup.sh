@@ -17,10 +17,14 @@
 # Detect operating system
 function DetectPlatform() {
 	platform='unknown'
+	arch='unknown'
+	release='unknown'
 	unamestr=`uname`
 	if [[ "$unamestr" == 'Linux' ]]; then
 		platform='linux'
 		cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+		arch=$( uname -m | sed 's/x86_//;s/i[3-6]86/32/' )
+		release=$( cat /etc/os-release | grep VERSION_ID | cut -f 2 -d '"' )
 	elif [[ "$unamestr" == 'Darwin' ]]; then
 		platform='mac'
 		cores=4 # whelp
@@ -55,13 +59,12 @@ function EnsurePipPackages() {(
 	# Pip will happily save instructions it has no idea how to proccess.
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
+	DetectPlatform
 
-	arch=`uname -m | sed 's/x86_//;s/i[3-6]86/32/'`
 	if [ "$arch" != "64" ]; then
 		bb-log-error "Only 64-bit architecture supported"
            exit 1;
 	fi;
-	release=`lsb_release -sr`
 	url="https://lester.ilabs.uw.edu/files/wheelhouse/$release"
 	if [ `curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].."` != "1" ]; then
 		bb-log-error "No pip packages found for distribution $release"

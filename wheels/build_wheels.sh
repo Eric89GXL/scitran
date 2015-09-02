@@ -29,5 +29,8 @@ pip install --upgrade --no-index -f wheelhouse -r ../requirements/02_build_insta
 pip wheel --no-cache-dir -f wheelhouse -r ../requirements/03_build.txt
 pip install --upgrade --no-index -f wheelhouse -r ../requirements/03_install.txt
 
-# we need separate "_build" and "_install" text files for some deps
-# because they are built from git source
+# We need separate "_build.txt" and "_install.txt" files for some deps
+# because they are built from git source. If we only used one file, then pip
+# will *always* rebuilds and reinstall the packages. By building, checking
+# the resulting version number, and installing that specific version number,
+# we end up avoiding the recompile/reinstall for every check.
