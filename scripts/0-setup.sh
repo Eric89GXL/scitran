@@ -24,7 +24,12 @@ function DetectPlatform() {
 		platform='linux'
 		cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
 		arch=$( uname -m | sed 's/x86_//;s/i[3-6]86/32/' )
-		release=$( cat /etc/os-release | grep VERSION_ID | cut -f 2 -d '"' )
+		# some old versions of ubuntu (e.g., 12.04) don't have this file
+		if [ -e /etc/os-release ]; then
+			release=$( cat /etc/os-release | grep VERSION_ID | cut -f 2 -d '"' )
+		else
+			release=$( lsb_release -sr )
+		fi;
 	elif [[ "$unamestr" == 'Darwin' ]]; then
 		platform='mac'
 		cores=4 # whelp
@@ -63,21 +68,22 @@ function EnsurePipPackages() {(
 
 	if [ "$arch" != "64" ]; then
 		bb-log-error "Only 64-bit architecture supported"
-           exit 1;
+		exit 1;
 	fi;
-	url="https://lester.ilabs.uw.edu/files/wheelhouse/$release"
-	if [ `curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].."` != "1" ]; then
-		bb-log-error "No pip packages found for distribution $release"
-           exit 1;
+	host="lester.ilabs.uw.edu"
+	url="https://${host}/files/wheelhouse/$release"
+	if [ -z "$release" || `curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].."` != "1" ]; then
+		bb-log-error "No pip packages found for distribution '$release'"
+		exit 1;
 	fi;
 
-	bb-log-info "Checking Python packages"
+	bb-log-info "Checking Python packages at ${url}"
 	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
+
 	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
-	pip install --no-index -f $url -r requirements/00_build_install.txt | (grep -Ev "$ignore" || true)
-	pip install --no-index -f $url -r requirements/01_build_install.txt | (grep -Ev "$ignore" || true)
-	pip install --no-index -f $url -r requirements/02_build_install.txt | (grep -Ev "$ignore" || true)
-	pip install --no-index -f $url -r requirements/03_install.txt | (grep -Ev "$ignore" || true)
+	for f in requirements/*_install.txt; do
+		pip install --no-index --trusted-host $host -f $url -r $f | (grep -Ev "$ignore" || true)
+	done
 )}
 
 # For loading all project configuration into bash variables.
