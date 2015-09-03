@@ -70,9 +70,8 @@ function EnsurePipPackages() {(
 		bb-log-error "Only 64-bit architecture supported"
 		exit 1;
 	fi;
-	host="lester.ilabs.uw.edu"
-	url="https://${host}/files/wheelhouse/$release"
-	if [ -z "$release" || `curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].."` != "1" ]; then
+	url="https://lester.ilabs.uw.edu/files/wheelhouse/$release"
+	if [ -z "$release" ] || [ $( curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].." ) != "1" ]; then
 		bb-log-error "No pip packages found for distribution '$release'"
 		exit 1;
 	fi;
@@ -82,7 +81,7 @@ function EnsurePipPackages() {(
 
 	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
 	for f in requirements/*_install.txt; do
-		pip install --no-index --trusted-host $host -f $url -r $f | (grep -Ev "$ignore" || true)
+		pip install --no-index -f $url -r $f | (grep -Ev "$ignore" || true)
 	done
 )}
 
