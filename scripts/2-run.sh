@@ -96,7 +96,7 @@ function BootStrapUsers() {(
 
 	# Load user(s)
 	export PYTHONPATH=.:../data
-	./bin/bootstrap.py dbinit -j $1 "mongodb://${_mongo_uri}"
+	./bin/bootstrap.py users "mongodb://${_mongo_uri}" $1
 	result=$?
 
 	# Shut down reflex, if bootstrapping failed exit.
