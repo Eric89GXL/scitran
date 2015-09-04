@@ -122,7 +122,7 @@
 				PrintSecret ;;
 
 			reset-db)
-				rm -rf persistent/mongo persistent/data
+				rm -rf persistent/mongo/* persistent/data/*
 				Setup
 				Install
 				Bootstrap ;;
