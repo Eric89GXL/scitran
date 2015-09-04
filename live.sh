@@ -19,7 +19,7 @@ set -e
 	source scripts/3-targets.sh
 
 	function Usage() {
-		echo "Usage: $0 {setup|configure|run|cmd|api|http|mongo|tail-python|template|ci|release|update|secret|reset-db|lint}" 1>&2;
+		echo "Usage: $0 {setup|bootstrap|run|cmd|api|http|mongo|tail-python|template|ci|release|update|secret|reset-db|lint}" 1>&2;
 		exit 1
 	}
 
@@ -33,8 +33,8 @@ set -e
 			setup)
 				SetupTarget ;;
 
-			configure)
-				ConfigureTarget ;;
+			bootstrap)
+				BootstrapTarget ;;
 
 			run)
 				RunTarget ;;
@@ -123,10 +123,10 @@ set -e
 				PrintSecret ;;
 
 			reset-db)
-				rm -rf persistent/mongo/*
+				rm -rf persistent/mongo/* persistent/data/*
 				Setup
 				Install
-				Configure ;;
+				Bootstrap ;;
 
 			lint)
 				PyLint ;;

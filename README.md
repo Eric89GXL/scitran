@@ -25,7 +25,7 @@ If desired, you can edit your config file now, or you can come back later. Check
 Finish your install with:
 
 ```bash
-./live.sh configure
+./live.sh bootstrap
 ```
 
 This will prepare a user account and an example dataset to try out.
@@ -37,7 +37,7 @@ From the scitran folder, simply run `vagrant up && vagrant ssh`, then use the sa
 
 ## Running
 
-Once you have setup and configured scitran, running is as easy as:
+Once you have setup and bootstrapped scitran, running is as easy as:
 
 ```bash
 ./live.sh run

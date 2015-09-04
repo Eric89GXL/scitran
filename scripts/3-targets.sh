@@ -30,8 +30,8 @@ function Install() {
 
 # Scitran-specific stateful setup
 # Will temporarily launch platform for bootstrapping purposes
-function Configure() {
-	bb-log-info "Configuring"
+function Bootstrap() {
+	bb-log-info "Bootstrapping users and test data"
 
 	bb-log-info "Preparing infrastructre for bootstrap..."
 	StartReflex
@@ -102,14 +102,14 @@ function SetupTarget() {
 
 	echo
 	echo "Setup complete! You should now edit config.toml to configure your instance."
-	echo "After that, continue with: ./live.sh configure"
+	echo "After that, continue with: ./live.sh bootstrap and or ./live.sh run"
 	echo
 }
 
-function ConfigureTarget() {
+function BootstrapTarget() {
 	Setup
 	Install
-	Configure
+	Bootstrap
 
 	echo
 	echo "You are now ready to launch scitran!"
@@ -139,7 +139,7 @@ function CiTarget() {
 	Setup
 	Install
 
-	# No-prompt varient of configure target
+	# No-prompt varient of bootstrap target
 	EnsureTestData
 	EnsureBootstrapData
 
