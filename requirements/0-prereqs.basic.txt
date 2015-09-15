@@ -1,4 +1,4 @@
-# Packages that can be download direct from canonical maintainers and do not require compilation.
+# Packages that can be downloaded direct from canonical maintainers and do not require compilation.
 Markdown==2.6.2
 Pillow==2.9.0
 WebOb==1.4.1

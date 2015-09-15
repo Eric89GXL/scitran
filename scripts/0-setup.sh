@@ -74,7 +74,7 @@ function EnsurePipPackages() {(
 	# Squelch pip annoyances without using quiet flag.
 	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
 
-	baseURL="https://storage.googleapis.com/flywheel/whe33els"
+	baseURL="https://storage.googleapis.com/flywheel/wheels"
 	url="$baseURL/$platform/$release"
 
 	# Always have the latest tools (in the venv).
