@@ -38,7 +38,7 @@ function DetectPlatform() {
 
 function EnsurePackages() {
 	# Idempotently install apt packages
-	bb-apt-install libatlas3gf-base liblapack3gf libgmp10 libmpfr4 python-pip python-virtualenv uuid-runtime ca-certificates
+	bb-apt-install ca-certificates gfortran libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 python-dev python-pip python-virtualenv uuid-runtime
 }
 
 function LoadVenv() {

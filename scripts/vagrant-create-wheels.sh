@@ -10,6 +10,6 @@ packages=()
 packages+=(python-dev python-pip python-virtualenv)
 
 # Various dev packages for scientific wheels
-packages+=(libatlas3gf-base liblapack3gf libgmp10 libmpfr4 liblapack-dev libatlas-base-dev gfortran)\
+packages+=(libatlas3gf-base liblapack3gf libgmp10 libmpfr4 liblapack-dev libatlas-base-dev gfortran)
 
 apt-get -y install "${packages[@]}"
