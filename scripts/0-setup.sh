@@ -106,8 +106,6 @@ function EnsurePipPackages() {(
 
 	# Install github source packages
 	for f in requirements/*source*.txt; do
-		echo $f
-
 		pip install -r $f | (grep -Ev "$ignore" || true)
 	done
 )}

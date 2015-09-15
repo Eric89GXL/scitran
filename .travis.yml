@@ -20,4 +20,4 @@ install: true
 sudo: required
 
 script:
-  - travis_wait ./live.sh ci
+  - ./live.sh ci
