@@ -70,18 +70,45 @@ function EnsurePipPackages() {(
 		bb-log-error "Only 64-bit architecture supported"
 		exit 1;
 	fi;
-	url="https://lester.ilabs.uw.edu/files/wheelhouse/$release"
-	if [ -z "$release" ] || [ $( curl -s --head $url | head -n 1 | grep -c "HTTP/1.[01] [23].." ) != "1" ]; then
-		bb-log-error "No pip packages found for distribution '$release'"
-		exit 1;
-	fi;
 
-	bb-log-info "Checking Python packages at ${url}"
+	# Squelch pip annoyances without using quiet flag.
 	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
 
+	baseURL="https://storage.googleapis.com/flywheel/whe33els"
+	url="$baseURL/$platform/$release"
+
+	# Always have the latest tools (in the venv).
 	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
-	for f in requirements/*_install.txt; do
-		pip install --no-index -f $url -r $f | (grep -Ev "$ignore" || true)
+
+	# Basic packages from index. No compilation.
+	for f in requirements/*basic*.txt; do
+		pip install -r $f | (grep -Ev "$ignore" || true)
+	done
+
+	# Install wheels if they exist for this platform + release.
+	temp="$( bb-tmp-dir )"
+
+	# Google storage buckets are not pip-simple compliant.
+	# https://pip.readthedocs.org/en/stable/reference/pip_install/#finding-packages
+	# https://pythonhosted.org/setuptools/easy_install.html#package-index-api
+	# https://www.python.org/dev/peps/pep-0301/
+	#
+	# Hackaround until we host somewhere more reasonable.
+	# Then, replace this manual list with a loop using '-f $url -r $f'
+	pip install $url/mne-0.9.0-py2-none-any.whl              | (grep -Ev "$ignore" || true)
+	pip install $url/numpy-1.9.2-cp27-none-linux_x86_64.whl  | (grep -Ev "$ignore" || true)
+	pip install $url/scipy-0.16.0-cp27-none-linux_x86_64.whl | (grep -Ev "$ignore" || true)
+
+	# Install manually if wheels failed.
+	for f in requirements/*wheels*.txt; do
+		pip install -r $f | (grep -Ev "$ignore" || true)
+	done
+
+	# Install github source packages
+	for f in requirements/*source*.txt; do
+		echo $f
+
+		pip install -r $f | (grep -Ev "$ignore" || true)
 	done
 )}
 

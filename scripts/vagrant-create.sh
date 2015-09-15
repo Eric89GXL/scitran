@@ -4,6 +4,9 @@
 # Box setup
 #
 
+# This is now used for both scitran development AND building python wheels.
+# Make sure any changes are applicable to both.
+
 # Speed up installs and don't create cache files
 #	See: https://github.com/dotcloud/docker/pull/1883#issuecomment-24434115
 echo "force-unsafe-io"                 > /etc/dpkg/dpkg.cfg.d/02apt-speedup
@@ -52,5 +55,5 @@ apt-get -y install "${packages[@]}"
 # rm -f /etc/update-motd.d/*
 # service ssh restart
 
-# Start in /scitran
-echo "cd /scitran" >> /home/vagrant/.bashrc
+# Start in /scitran if it exists
+echo "test -d /scitran && cd /scitran" >> /home/vagrant/.bashrc
