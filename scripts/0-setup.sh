@@ -55,6 +55,11 @@ function EnsurePipPackages() {(
 		bb-flag-unset $flagName
 
 		virtualenv persistent/venv
+
+		# Always have the latest tools (in the venv).
+		LoadVenv
+		pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
+
 		bb-log-info "Created python virtual environment"
 	)
 
@@ -66,19 +71,11 @@ function EnsurePipPackages() {(
 	LoadVenv
 	DetectPlatform
 
-	if [ "$arch" != "64" ]; then
-		bb-log-error "Only 64-bit architecture supported"
-		exit 1;
-	fi;
-
 	# Squelch pip annoyances without using quiet flag.
 	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
 
 	baseURL="https://storage.googleapis.com/flywheel/wheels"
-	url="$baseURL/$platform/$release"
-
-	# Always have the latest tools (in the venv).
-	pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
+	url="$baseURL/$platform-$arch/$release"
 
 	# Basic packages from index. No compilation.
 	for f in requirements/*basic*.txt; do
