@@ -9,15 +9,43 @@
 #   allow_failures:
 #     - os: osx
 
+# Use containers
+sudo: false
+
+# Without root, we have to get CI to install apt pkgs for us
+# These must match with the Prepare target in scripts/0-setup.sh
+#
+# The following packages are ignored by Travis' whitelist:
+# libatlas3gf-base, uuid-runtime
+#
+# If it ever becomes neccesary, they have an approval process:
+# https://github.com/travis-ci/apt-package-whitelist#package-approval-process
+addons:
+  apt:
+    packages:
+      - build-essential
+      - ca-certificates
+      - gfortran
+      - libatlas-dev
+      - libatlas-base-dev
+      - libatlas3gf-base
+      - libgmp10
+      - liblapack-dev
+      - liblapack3gf
+      - libmpfr4
+      - libpcre3-dev
+      - libssl-dev
+      - python-dev
+      - python-pip
+      - python-virtualenv
+      - uuid-runtime
+
 language: python
 python:
   - "2.7"
 
 # Explicitly disable heuristic cleverness
 install: true
-
-# Do not use containers
-sudo: required
 
 script:
   - ./live.sh ci

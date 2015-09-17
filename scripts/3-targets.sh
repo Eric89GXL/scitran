@@ -8,7 +8,6 @@
 function Setup() {
 	DetectPlatform
 
-	EnsurePackages
 	EnsurePipPackages
 	EnsureConfig
 
@@ -17,8 +16,8 @@ function Setup() {
 
 # Install prequisites
 function Install() {
-	EnsureNginx
 	EnsureMongoDb
+	EnsureNginx
 	EnsureGolang
 	EnsureReflex
 	EnsureTemplates
@@ -134,6 +133,8 @@ function PrintSecret() {
 
 # What should our CI target run?
 function CiTarget() {
+	DetectPlatform
+
 	Setup
 	Install
 
@@ -152,7 +153,6 @@ function CiTarget() {
 }
 
 function PyLint() {
-	EnsurePackages
 	EnsurePipPackages
 	PylintAll
 }

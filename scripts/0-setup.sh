@@ -32,14 +32,24 @@ function DetectPlatform() {
 		fi;
 	elif [[ "$unamestr" == 'Darwin' ]]; then
 		platform='mac'
-		cores=4 # whelp
+		cores=$( sysctl -n hw.ncpu )
 	fi
 }
 
-function EnsurePackages() {
-	# Idempotently install apt packages
-	bb-apt-install ca-certificates gfortran libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 python-dev python-pip python-virtualenv uuid-runtime
-}
+# Automate the sudo parts for your automating pleasure
+function Prepare() {(
+	DetectPlatform
+
+	if [[ "$platform" == "linux" ]]; then
+		bb-log-info "Preparing linux system"
+
+		# These must match lines in travis config
+		bb-apt-install build-essential ca-certificates gfortran libatlas-dev libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 libpcre3-dev libssl-dev python-dev python-pip python-virtualenv uuid-runtime
+
+	else
+		bb-log-info "Skipping preparation as no instructions for your platform"
+	fi
+)}
 
 function LoadVenv() {
 	# Ensure .pyc files are generated

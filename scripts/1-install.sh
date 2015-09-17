@@ -6,6 +6,9 @@
 # Save calculated locations. Required for all later functions.
 function DeriveLocations() {
 	golangDir=$BB_WORKSPACE/golang/${_version_golang}
+	nginxDir=$BB_WORKSPACE/nginx/${_version_nginx}
+	sconsDir=$BB_WORKSPACE/scons/${_version_scons}
+	mongoDir=$BB_WORKSPACE/mongo/${_version_mongo}
 	reflexLoc=$BB_WORKSPACE/reflex
 }
 
@@ -19,7 +22,7 @@ function EnsureGolang() {(
 	snip="linux-amd64"
 
 	# bb-download appears to have strange quirks. How about no.
-	wget https://storage.googleapis.com/golang/go${_version_golang}.${snip}.tar.gz --progress=dot:mega -O $temp/$tarF
+	wget https://storage.googleapis.com/golang/go${_version_golang}.${snip}.tar.gz -O $temp/$tarF
 	(
 		cd $temp
 		mkdir -p "$golangDir"
@@ -31,67 +34,96 @@ function EnsureGolang() {(
 	bb-flag-set golang-${_version_golang}
 )}
 
-function EnsureMongoDb() {(
 
-	set +e
-	bb-flag? mongodb-${_version_mongo} && return
-	set -e
+function EnsureMongoDb() {
+	test -f $mongoDir/bin/mongod || (
 
-	# http://docs.mongodb.org/v2.6/tutorial/install-mongodb-on-ubuntu
-	sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
-	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
-	bb-log-info "Updating apt..."
-	sudo apt-get update -qq
-	sudo apt-get install -y mongodb-org=${_version_mongo} mongodb-org-server=${_version_mongo} mongodb-org-shell=${_version_mongo} mongodb-org-mongos=${_version_mongo} mongodb-org-tools=${_version_mongo}
 
-	echo "mongodb-org hold"        | sudo dpkg --set-selections
-	echo "mongodb-org-server hold" | sudo dpkg --set-selections
-	echo "mongodb-org-shell hold"  | sudo dpkg --set-selections
-	echo "mongodb-org-mongos hold" | sudo dpkg --set-selections
-	echo "mongodb-org-tools hold"  | sudo dpkg --set-selections
+		# Travis is too old to make modern SSL connections.
+		# This is a problem as
+		# https://www.ssllabs.com/ssltest/analyze.html?d=fastdl.mongodb.org
+		#
+		# For now, we'll self-host these downloads.
+		# https://github.com/travis-ci/travis-ci/issues/4757
+		# http://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
 
-	# Potential removal instructions:
-	# sudo apt-get purge mongodb mongodb-clients mongodb-dev mongodb-server
-	# sudo rm -rf /var/log/mongodb /var/lib/mongodb
+		# baseURL="https://fastdl.mongodb.org"
+		baseURL="https://storage.googleapis.com/flywheel/etc/mongo"
 
-	mongod --version | head -n 1
-	bb-log-info Mongo ${_version_mongo} installed.
-	bb-flag-set mongodb-${_version_mongo}
-)}
+		# Map $platform and $arch to mongo download URLs
+		if [[ "$platform" == "linux" ]]; then
+			baseURL="$baseURL/linux/mongodb-linux"
+			v=${_version_mongo}
 
-function EnsureNginx() {(
-	set +e
-	bb-flag? nginx && return
-	set -e
+			if [[ $arch -eq 32 ]]; then
+				# 32-bit generic
+				url="$baseURL-i686-$v.tgz"
+			else
+				# 64-bit generic
+				baseURL="$baseURL-x86_64"
+				url="$baseURL-$v.tgz"
 
-	if bb-apt-package? nginx; then
-		previouslyInstalled=true
-	fi
+				#Specific ubuntu releases
+				if [[ $release == "14.10" ]]; then
+					url="$baseURL-ubuntu1410-clang-$v.tgz"
+				elif [[ $release == "14.04" ]]; then
+					url="$baseURL-ubuntu1404-$v.tgz"
+				elif [[ $release == "12.04" ]]; then
+					url="$baseURL-ubuntu1204-$v.tgz"
+				fi
+			fi
 
-	sudo add-apt-repository -y ppa:nginx/stable
-	bb-log-info "Updating apt..."
-	sudo apt-get update -qq
-	sudo apt-get install -y nginx
-
-	# Hackaround for nginx config not listening to my demand that it not use /var/log/nginx.
-	# A zero-byte error log is generated there, completely ignoring configuration.
-	# It looks like nginx is hard coded to assume it's launched with root.
-	sudo mkdir -p /var/log/nginx/
-	sudo touch /var/log/nginx/error.log
-	sudo chmod -R 777 /var/log/nginx/
-
-	# Stop nginx service if it was not previously installed
-	if [ -z $previouslyInstalled ] ; then
-		# Opportunistically stop service; ignore failures
-		if which service > /dev/null; then
-			sudo service nginx stop || true
+		else
+			bb-log-info "Download URLs not configured for $arch-bit $platform."
+			exit 2
 		fi
-	fi
 
-	nginx -v
-	bb-log-info Nginx installed.
-	bb-flag-set nginx
-)}
+		temp="$( bb-tmp-dir )"
+		cd $temp
+
+		wget $url -O download.tar.gz
+		tar -xf download.tar.gz --strip-components 1
+
+		mkdir -p $mongoDir
+		mv * $mongoDir/
+
+		rm -rf $temp
+
+		$mongoDir/bin/mongo --version
+		bb-log-info "Mongo installed"
+	)
+}
+
+function EnsureNginx() {
+	test -f $nginxDir/sbin/nginx || (
+		temp="$( bb-tmp-dir )"
+
+		cd $temp
+		wget http://nginx.org/download/nginx-${_version_nginx}.tar.gz -O download.tar.gz
+		tar -xf download.tar.gz --strip-components 1
+
+		# Configure
+		#	http://wiki.nginx.org/Install
+		#	http://wiki.nginx.org/InstallOptions
+		./configure \
+			--with-pcre-jit \
+			--with-http_ssl_module \
+			--prefix=${nginxDir} \
+			--conf-path=${_folder_generated}/nginx \
+			--pid-path=${_folder_pids} \
+			--http-log-path=${_folder_logs}/nginx-access.log \
+			--error-log-path=${_folder_logs}/nginx-error.log
+
+		# Compile, install
+		nice make -j$cores
+		make install
+
+		rm -rf $temp $nginxDir/persistent
+
+		$nginxDir/sbin/nginx -v
+		bb-log-info "Nginx installed"
+	)
+}
 
 function EnsureReflex() {(
 	set +e

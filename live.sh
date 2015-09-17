@@ -39,6 +39,9 @@ set -e
 			run)
 				RunTarget ;;
 
+			prepare)
+				Prepare ;;
+
 			# Run a command in the venv with config variables loaded
 			# Examples:
 			#	./live.sh cmd pip freeze
