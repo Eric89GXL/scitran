@@ -49,10 +49,7 @@
 [version]
 	golang = "1.4.2"
 
-	# Required for mongo
-	scons = "2.3.5"
-
-	mongo = "2.6.9"
+	mongo = "3.0.6"
 
 	nginx = "1.9.3"
 

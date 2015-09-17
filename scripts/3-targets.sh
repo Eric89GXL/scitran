@@ -16,9 +16,8 @@ function Setup() {
 
 # Install prequisites
 function Install() {
-	EnsureNginx
-	EnsureScons
 	EnsureMongoDb
+	EnsureNginx
 	EnsureGolang
 	EnsureReflex
 	EnsureTemplates

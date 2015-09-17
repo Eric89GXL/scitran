@@ -34,46 +34,51 @@ function EnsureGolang() {(
 	bb-flag-set golang-${_version_golang}
 )}
 
-function EnsureScons() {(
-	test -f $sconsDir/bin/scons || (
-		temp="$( bb-tmp-dir )"
-
-		(
-			cd $temp
-
-			wget https://downloads.sourceforge.net/project/scons/scons/${_version_scons}/scons-${_version_scons}.tar.gz -O download.tar.gz
-			tar -xf download.tar.gz --strip-components 1
-
-			python setup.py install --prefix=$sconsDir
-
-			rm -rf $temp
-		)
-	)
-)}
 
 function EnsureMongoDb() {(
 
-	test -d $mongoDir || (
+	test -f $mongoDir/bin/mongod || (
+
+		baseURL="https://fastdl.mongodb.org"
+
+		# Map $platform and $arch to mongo download URLs
+		if [[ "$platform" == "linux" ]]; then
+			baseURL="$baseURL/linux/mongodb-linux"
+			v=${_version_mongo}
+
+			if [[ $arch -eq 32 ]]; then
+				# 32-bit generic
+				url="$baseURL-i686-$v.tgz"
+			else
+				# 64-bit generic
+				baseURL="$baseURL-x86_64"
+				url="$baseURL-$v.tgz"
+
+				#Specific ubuntu releases
+				if [[ $release == "14.10" ]]; then
+					url="$baseURL-ubuntu1410-clang-$v.tgz"
+				elif [[ $release == "14.04" ]]; then
+					url="$baseURL-ubuntu1404-$v.tgz"
+				elif [[ $release == "12.04" ]]; then
+					url="$baseURL-ubuntu1204-$v.tgz"
+				fi
+			fi
+
+		else
+			bb-log-info "Download URLs not configured for $arch-bit $platform."
+			exit 2
+		fi
+
 		temp="$( bb-tmp-dir )"
-		(
-			cd $temp
+		cd $temp
 
-			git clone https://github.com/mongodb/mongo.git -b r${_version_mongo} --depth 1 $temp
+		wget $url -O download.tar.gz
+		tar -xf download.tar.gz --strip-components 1
 
-			# wget https://github.com/mongodb/mongo/archive/r${_version_mongo}.tar.gz -O download.tar.gz
-			# tar -xf download.tar.gz --strip-components 1
+		mkdir -p $mongoDir
+		mv * $mongoDir/
 
-			nice $sconsDir/bin/scons mongod mongo \
-				--disable-warnings-as-errors \
-				-j$cores \
-				--prefix=$mongoDir
-
-			mkdir -p $mongoDir
-			cd build/linux2/normal/mongo
-			cp mongo mongod $mongoDir
-
-			rm -rf $temp
-		)
+		rm -rf $temp
 	)
 )}
 
@@ -81,29 +86,27 @@ function EnsureNginx() {(
 	test -f $nginxDir/sbin/nginx || (
 		temp="$( bb-tmp-dir )"
 
-		(
-			cd $temp
-			wget http://nginx.org/download/nginx-${_version_nginx}.tar.gz -O download.tar.gz
-			tar -xf download.tar.gz --strip-components 1
+		cd $temp
+		wget http://nginx.org/download/nginx-${_version_nginx}.tar.gz -O download.tar.gz
+		tar -xf download.tar.gz --strip-components 1
 
-			# Configure
-			#	http://wiki.nginx.org/Install
-			#	http://wiki.nginx.org/InstallOptions
-			./configure \
-				--with-pcre-jit \
-				--with-http_ssl_module \
-				--prefix=${nginxDir} \
-				--conf-path=${_folder_generated}/nginx \
-				--pid-path=${_folder_pids} \
-				--http-log-path=${_folder_logs}/nginx-access.log \
-				--error-log-path=${_folder_logs}/nginx-error.log
+		# Configure
+		#	http://wiki.nginx.org/Install
+		#	http://wiki.nginx.org/InstallOptions
+		./configure \
+			--with-pcre-jit \
+			--with-http_ssl_module \
+			--prefix=${nginxDir} \
+			--conf-path=${_folder_generated}/nginx \
+			--pid-path=${_folder_pids} \
+			--http-log-path=${_folder_logs}/nginx-access.log \
+			--error-log-path=${_folder_logs}/nginx-error.log
 
-			# Compile, install
-			nice make -j$cores
-			make install
+		# Compile, install
+		nice make -j$cores
+		make install
 
-			rm -rf $temp $nginxDir/persistent
-		)
+		rm -rf $temp $nginxDir/persistent
 	)
 )}
 
