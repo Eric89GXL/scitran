@@ -71,14 +71,14 @@ function EnsureNginx() {(
 	sudo add-apt-repository -y ppa:nginx/stable
 	bb-log-info "Updating apt..."
 	sudo apt-get update -qq
-	sudo apt-get install -y ca-certificates
 	sudo apt-get install -y nginx
 
 	# Hackaround for nginx config not listening to my demand that it not use /var/log/nginx.
 	# A zero-byte error log is generated there, completely ignoring configuration.
 	# It looks like nginx is hard coded to assume it's launched with root.
 	sudo mkdir -p /var/log/nginx/
-	sudo chmod 777 /var/log/nginx/
+	sudo touch /var/log/nginx/error.log
+	sudo chmod -R 777 /var/log/nginx/
 
 	# Stop nginx service if it was not previously installed
 	if [ -z $previouslyInstalled ] ; then

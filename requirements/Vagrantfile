@@ -1,0 +1,71 @@
+
+# Build python wheels for various systems in a virtual machine.
+
+Vagrant.configure(2) do |config|
+
+  #
+  # Directives outside single machines will take effect globally.
+  #
+
+  config.vm.box_check_update = false
+
+  # Run for all distros
+  config.vm.provision "shell", :path => "../scripts/vagrant-create.sh"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = false
+
+    # VBoxManage settings
+    vb.customize ["modifyvm", :id,
+      # Better I/O, disable if problems
+      "--ioapic", "on",
+
+      # Set this to the number of CPU cores you have
+      "--cpus",   "4",
+
+      # RAM allocation
+      "--memory", "2048"
+    ]
+  end
+
+  #
+  # Configure a few VMs to build wheels for each linux distro
+  #
+
+  # Ubuntu Server 12.04 LTS (Precise Pangolin)
+  config.vm.define "precise" do |precise|
+    precise.vm.box = "precise"
+    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box"
+
+    # Distro-specific package provisioner
+    config.vm.provision "shell", :path => "../scripts/vagrant-create-wheels.sh"
+  end
+
+  # Ubuntu Server 14.04 LTS (Trusty Tahr)
+  config.vm.define "trusty" do |trusty|
+    trusty.vm.box = "trusty"
+    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box"
+
+    # Distro-specific package provisioner
+    config.vm.provision "shell", :path => "../scripts/vagrant-create-wheels.sh"
+  end
+
+  #  Ubuntu Server 15.04 (Vivid Vervet)
+  config.vm.define "vivid" do |vivid|
+    vivid.vm.box = "vivid"
+    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/vivid/current/vivid-server-cloudimg-amd64-vagrant-disk1.box"
+
+    # Distro-specific package provisioner
+    config.vm.provision "shell", :path => "../scripts/vagrant-create-wheels.sh"
+  end
+
+  # Ubuntu Server 15.10 (Wily Werewolf)
+  config.vm.define "wily" do |wily|
+    wily.vm.box = "wily"
+    config.vm.box_url = "https://cloud-images.ubuntu.com/vagrant/wily/current/wily-server-cloudimg-amd64-vagrant-disk1.box"
+
+    # Distro-specific package provisioner
+    config.vm.provision "shell", :path => "../scripts/vagrant-create-wheels.sh"
+  end
+
+end

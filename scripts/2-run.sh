@@ -105,6 +105,7 @@ function BootStrapUsers() {(
 		StopReflex
 		exit $result;
 	fi
+	set -e
 )}
 
 function BootStrapData() {(
@@ -134,6 +135,7 @@ function BootStrapData() {(
 		StopReflex
 		exit $result;
 	fi
+	set -e
 )}
 
 # Add some initial db state if none exists.

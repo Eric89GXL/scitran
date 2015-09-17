@@ -17,10 +17,19 @@
 # Detect operating system
 function DetectPlatform() {
 	platform='unknown'
+	arch='unknown'
+	release='unknown'
 	unamestr=`uname`
 	if [[ "$unamestr" == 'Linux' ]]; then
 		platform='linux'
 		cores=$( awk -F: '/model name/ {core++} END {print core}' /proc/cpuinfo )
+		arch=$( uname -m | sed 's/x86_//;s/i[3-6]86/32/' )
+		# some old versions of ubuntu (e.g., 12.04) don't have this file
+		if [ -e /etc/os-release ]; then
+			release=$( cat /etc/os-release | grep VERSION_ID | cut -f 2 -d '"' )
+		else
+			release=$( lsb_release -sr )
+		fi;
 	elif [[ "$unamestr" == 'Darwin' ]]; then
 		platform='mac'
 		cores=4 # whelp
@@ -29,40 +38,8 @@ function DetectPlatform() {
 
 function EnsurePackages() {
 	# Idempotently install apt packages
-	bb-apt-install build-essential python-dev libatlas-dev libatlas-base-dev liblapack-dev gfortran libgmp-dev libmpfr-dev ccache
+	bb-apt-install ca-certificates gfortran libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 python-dev python-pip python-virtualenv uuid-runtime
 }
-
-function EnsurePip() {(
-	set +e
-	bb-flag? pip && return
-	set -e
-
-	# Ensure .pyc files are generated
-	unset PYTHONDONTWRITEBYTECODE
-
-	# Download pip bootstrapper
-	tempF="$( bb-tmp-file )"
-	curl https://bootstrap.pypa.io/get-pip.py > $tempF
-
-	# Install then upgrade pip
-	sudo python $tempF
-	sudo pip install --upgrade pip
-
-	bb-log-info "Pip installed"
-	bb-flag-set pip
-)}
-
-function EnsureVirtualEnv() {(
-	set +e
-	bb-flag? venv && return
-	set -e
-
-	sudo apt-get install -y python-virtualenv
-
-	bb-log-info "Virtualenv installed"
-	bb-flag-set venv
-)}
-
 
 function LoadVenv() {
 	# Ensure .pyc files are generated
@@ -78,6 +55,11 @@ function EnsurePipPackages() {(
 		bb-flag-unset $flagName
 
 		virtualenv persistent/venv
+
+		# Always have the latest tools (in the venv).
+		LoadVenv
+		pip install --upgrade pip wheel setuptools | (grep -Ev "$ignore" || true)
+
 		bb-log-info "Created python virtual environment"
 	)
 
@@ -87,13 +69,42 @@ function EnsurePipPackages() {(
 	# Pip will happily save instructions it has no idea how to proccess.
 	# Specifically, you should ignore lines from manually-installed (git) packages.
 	LoadVenv
+	DetectPlatform
 
-	# Travis can't handle building `scipy` from source, so let's speed it up here
-	if [ "${TRAVIS}" == "true" ]; then
-		pip install --no-index -f http://travis-wheels.scikit-image.org numpy==1.9.2 scipy==0.14
-	fi;
-	pip install -r requirements.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
-	pip install -r requirements_1.txt | (egrep -v "^(Requirement already satisfied|Cleaning up...)" || true)
+	# Squelch pip annoyances without using quiet flag.
+	ignore="^(Requirement already up-to-date|Requirement already satisfied|Ignoring indexes)"
+
+	baseURL="https://storage.googleapis.com/flywheel/wheels"
+	url="$baseURL/$platform-$arch/$release"
+
+	# Basic packages from index. No compilation.
+	for f in requirements/*basic*.txt; do
+		pip install -r $f | (grep -Ev "$ignore" || true)
+	done
+
+	# Install wheels if they exist for this platform + release.
+	temp="$( bb-tmp-dir )"
+
+	# Google storage buckets are not pip-simple compliant.
+	# https://pip.readthedocs.org/en/stable/reference/pip_install/#finding-packages
+	# https://pythonhosted.org/setuptools/easy_install.html#package-index-api
+	# https://www.python.org/dev/peps/pep-0301/
+	#
+	# Hackaround until we host somewhere more reasonable.
+	# Then, replace this manual list with a loop using '-f $url -r $f'
+	pip install $url/mne-0.9.0-py2-none-any.whl              | (grep -Ev "$ignore" || true)
+	pip install $url/numpy-1.9.2-cp27-none-linux_x86_64.whl  | (grep -Ev "$ignore" || true)
+	pip install $url/scipy-0.16.0-cp27-none-linux_x86_64.whl | (grep -Ev "$ignore" || true)
+
+	# Install manually if wheels failed.
+	for f in requirements/*wheels*.txt; do
+		pip install -r $f | (grep -Ev "$ignore" || true)
+	done
+
+	# Install github source packages
+	for f in requirements/*source*.txt; do
+		pip install -r $f | (grep -Ev "$ignore" || true)
+	done
 )}
 
 # For loading all project configuration into bash variables.
@@ -108,11 +119,6 @@ function LoadConfig() {
 function EnsureConfig() {
 
 	test -f config.toml || (
-
-		# Hackaround: travis started not having this package.
-		# If source infra lands, this can go away in favor of travis apt config
-		# Package requirement should be doc'd also.
-		which uuidgen || sudo apt-get install -y uuid-runtime
 
 		# Generate a shared secret
 		secret=`uuidgen --random /dev/random | sed 's/-//g'`

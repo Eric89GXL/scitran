@@ -1,0 +1,3 @@
+# These packages will be opportunistically built and installed as wheels.
+# Numpy is placed alone here because pip is not wise with dep ordering.
+numpy==1.9.2
