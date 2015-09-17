@@ -41,8 +41,7 @@ Make sure you have the equivalent packages installed on your system before conti
 ./live.sh setup
 ```
 
-This will install everything scitran needs and generate things you need, such as a config file.<br>
-If desired, you can edit your config file now, or you can come back later. Check out [configuring](#configuring) for more info.
+This will install everything scitran needs and generate things you need, such as a config file. If desired, you can edit your config file now, or you can come back later. Check out [configuring](#configuring) for more info.
 
 Finish your install with:
 
@@ -52,7 +51,7 @@ Finish your install with:
 
 This will prepare a user account and an example dataset to try out.
 
-### Vagrant
+#### Vagrant
 
 If you're not using Linux, you'll need to use [Vagrant](https://www.vagrantup.com). From the scitran folder, simply run `vagrant up && vagrant ssh`, then use the same commands above.
 
