@@ -43,19 +43,8 @@ function Prepare() {(
 	if [[ "$platform" == "linux" ]]; then
 		bb-log-info "Preparing linux system"
 
-		# Ensure .pyc files are generated
-		unset PYTHONDONTWRITEBYTECODE
-
-		# TODO: could use bb-apt? and bb-yum? here to support more distros
-		sudo apt-get install -y build-essential python-dev python-virtualenv libpcre3-dev libssl-dev
-
-		# Download pip bootstrapper
-		tempF="$( bb-tmp-file )"
-		curl https://bootstrap.pypa.io/get-pip.py > $tempF
-
-		# Install then upgrade pip
-		sudo python $tempF
-		sudo pip install --upgrade pip
+		# These must match lines in travis config
+		bb-apt-install build-essential ca-certificates gfortran libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 libpcre3-dev libssl-dev python-dev python-pip python-virtualenv uuid-runtime
 
 	else
 		bb-log-info "Skipping preparation as no instructions for your platform"

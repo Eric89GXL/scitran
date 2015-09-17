@@ -8,6 +8,7 @@ Do Research. Extract Opportunity.
 
 [![Build Status](https://img.shields.io/travis/scitran/scitran/master.svg?style=flat-square)](https://travis-ci.org/scitran/scitran)
 
+
 ## Setup
 
 You'll need [Python 2.7](https://www.python.org) and [Git](https://git-scm.com).<br>
@@ -17,23 +18,22 @@ First, grab our repository:
 
 ```bash
 git clone https://github.com/scitran/scitran.git && cd scitran
+
+# Install various required packages
+./live.sh prepare
 ```
 
-#### Ubuntu 64-bit
+#### Instructions for specific platforms
 
-We have a convenient script target: `./live.sh prepare`. <br>
-This will ask for sudo to install a couple packages.
+If you're not running on Ubuntu, you may have a few more steps to take.<br>
+Or, if you prefer, you can run Scitran inside a [Vagrant](https://www.vagrantup.com/) virtual machine.
 
-#### Vagrant
+<!---
+	Platforms not listed here are not officially supported yet, but should work fine.
+-->
 
-If you prefer, you can run Scitran inside a [Vagrant](https://www.vagrantup.com/) virtual machine - skip straight to installation!
-
-#### Other
-
-Platforms not listed here are not officially supported yet, but should work fine.
-
-Make sure you have your distribution's equivalent of `build-essential`, `libpcre3-dev`, `libssl-dev`, `python-dev`, `python-virtualenv`, and pip before continuing.
-
+In the Prepare function of [scripts/0-setup.sh](scripts/0-setup.sh), you will find a list of apt packages.<br>
+Make sure you have the equivalent packages installed on your system before continuing.
 
 ## Installation
 
@@ -54,8 +54,7 @@ This will prepare a user account and an example dataset to try out.
 
 ### Vagrant
 
-If you're not using Linux, you'll need to use [Vagrant](https://www.vagrantup.com).<br>
-From the scitran folder, simply run `vagrant up && vagrant ssh`, then use the same commands above.
+If you're not using Linux, you'll need to use [Vagrant](https://www.vagrantup.com). From the scitran folder, simply run `vagrant up && vagrant ssh`, then use the same commands above.
 
 ## Running
 
@@ -80,21 +79,6 @@ If you're looking to use scitran in production, there are a few things to prepar
 
 You'll find a few files in `persistent/keys`. Notably, `base-key+cert.pem` is used to serve scitran.<br>
 Due to our current architecture, SSL is mandatory. Switch this key for one of your own as desired.
-
-### Setting your machine auth secret
-
-Automated requests (such as from a [reaper](https://github.com/scitran/reaper)) will need a shared secret.<br>
-Anyone who knows this secret can make API requests, so you should protect it accordingly.<br>
-
-We recommend using makepasswd to generate a suitable secret:
-
-```bash
-sudo apt-get install -y makepasswd
-
-makepasswd --minchars=20 --maxchars=30
-```
-
-Save this value in your `config.toml` file as `auth.shared_secret`.
 
 ### Setting up your own OAuth provider
 
