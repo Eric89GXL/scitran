@@ -20,6 +20,7 @@ addons:
       - build-essential
       - ca-certificates
       - gfortran
+      - libatlas-dev
       - libatlas-base-dev
       - libatlas3gf-base
       - libgmp10

@@ -44,7 +44,7 @@ function Prepare() {(
 		bb-log-info "Preparing linux system"
 
 		# These must match lines in travis config
-		bb-apt-install build-essential ca-certificates gfortran libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 libpcre3-dev libssl-dev python-dev python-pip python-virtualenv uuid-runtime
+		bb-apt-install build-essential ca-certificates gfortran libatlas-dev libatlas-base-dev libatlas3gf-base libgmp10 liblapack-dev liblapack3gf libmpfr4 libpcre3-dev libssl-dev python-dev python-pip python-virtualenv uuid-runtime
 
 	else
 		bb-log-info "Skipping preparation as no instructions for your platform"
