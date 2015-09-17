@@ -153,7 +153,6 @@ function CiTarget() {
 }
 
 function PyLint() {
-	EnsurePackages
 	EnsurePipPackages
 	PylintAll
 }

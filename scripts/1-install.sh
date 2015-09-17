@@ -35,8 +35,7 @@ function EnsureGolang() {(
 )}
 
 
-function EnsureMongoDb() {(
-
+function EnsureMongoDb() {
 	test -f $mongoDir/bin/mongod || (
 
 
@@ -89,10 +88,13 @@ function EnsureMongoDb() {(
 		mv * $mongoDir/
 
 		rm -rf $temp
-	)
-)}
 
-function EnsureNginx() {(
+		$mongoDir/bin/mongo --version
+		bb-log-info "Mongo installed"
+	)
+}
+
+function EnsureNginx() {
 	test -f $nginxDir/sbin/nginx || (
 		temp="$( bb-tmp-dir )"
 
@@ -117,8 +119,11 @@ function EnsureNginx() {(
 		make install
 
 		rm -rf $temp $nginxDir/persistent
+
+		$nginxDir/sbin/nginx -v
+		bb-log-info "Nginx installed"
 	)
-)}
+}
 
 function EnsureReflex() {(
 	set +e
