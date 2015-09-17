@@ -49,7 +49,7 @@ function EnsureMongoDb() {(
 		# http://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
 
 		# baseURL="https://fastdl.mongodb.org"
-		baseURL="https://storage.googleapis.com/flywheel/etc/mongo/"
+		baseURL="https://storage.googleapis.com/flywheel/etc/mongo"
 
 		# Map $platform and $arch to mongo download URLs
 		if [[ "$platform" == "linux" ]]; then
