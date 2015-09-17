@@ -39,7 +39,17 @@ function EnsureMongoDb() {(
 
 	test -f $mongoDir/bin/mongod || (
 
-		baseURL="https://fastdl.mongodb.org"
+
+		# Travis is too old to make modern SSL connections.
+		# This is a problem as
+		# https://www.ssllabs.com/ssltest/analyze.html?d=fastdl.mongodb.org
+		#
+		# For now, we'll self-host these downloads.
+		# https://github.com/travis-ci/travis-ci/issues/4757
+		# http://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
+
+		# baseURL="https://fastdl.mongodb.org"
+		baseURL="https://storage.googleapis.com/flywheel/etc/mongo/"
 
 		# Map $platform and $arch to mongo download URLs
 		if [[ "$platform" == "linux" ]]; then

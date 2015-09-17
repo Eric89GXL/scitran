@@ -32,10 +32,6 @@ addons:
       - python-pip
       - python-virtualenv
       - uuid-runtime
-      # Travis is still on 12.04 and can't make SSL connections
-      # https://github.com/travis-ci/travis-ci/issues/4757
-      # http://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
-      - openssl
 
 language: python
 python:
